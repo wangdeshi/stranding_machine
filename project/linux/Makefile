@@ -29,15 +29,26 @@ define build_obj
 
 endef
 
+define move_file
+	if [ -f *.ihx ]; then \
+		mv *.ihx $(mkdir); \
+	fi; \
+	if [ -f *.lk ]; then \
+		mv *.lk $(mkdir); \
+	fi; \
+	if [ -f *.map ]; then \
+		mv *.map $(mkdir); \
+	fi; \
+	if [ -f *.mem ]; then \
+		mv *.mem $(mkdir); \
+	fi; 
+endef
 
 all : 
 	@mkdir -p $(MAKEROOT)/out; 
 	@$(call build_obj)
 	@$(CC) $(mkdir)main.rel `ls $(mkdir)*.rel|grep -v main.rel` $(LD_FLAGS)
-	@-mv *.ihx $(mkdir)
-	@-mv *.lk $(mkdir)
-	@-mv *.map $(mkdir)
-	@-mv *.mem $(mkdir)
+	@$(call move_file)
 	@#makebin $(mkdir)main.ihx strand.bin
 	@packihx $(mkdir)main.ihx > strand.hex
 	@#@objcopy -I ihex -O binary $(mkdir)strand.hex $(mkdir)strand.bin
