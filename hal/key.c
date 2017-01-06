@@ -27,11 +27,17 @@ static inline uint8 key_check(uint8 key_state, uint8 * key, uint8 * key_last) {
 
 void time0_process(void) interrupt 1 {
     static xdata uint8 count1 = 0, count2 = 3;
-    static xdata uint16 count3 = 0;
+    static xdata uint16 count3 = 0, count4 = 2;
     uint8 flag1;
 
     TH0 = (65536 - 1000) / 256;
     TL0 = (65536 - 1000) % 256;	
+
+    count4++;
+    if (count4 >= 500) {
+        count4 = 0;
+        global.flag.flashes = !global.flag.flashes;
+    }
 
     if (global.strand.brake_state == STRAND_BRAKE_STATE_TIMER_START) {
         count3++;

@@ -47,4 +47,8 @@ void set_all_group_config(void);
 
 void get_config(void);
 
+void fill_default_system_config(void);
+
+void fill_default_group_config(uint8 group_nums);
+
 #endif

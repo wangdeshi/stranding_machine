@@ -1,10 +1,16 @@
 #include "global.h"
 #include "util.h"
-#include "lcd_12864.h"
 
 struct GLOBAL xdata global;
 
-void init(void) {
+static void flag_init(void) {
+    global.flag.f10ms = 0;
+    global.flag.f50ms = 0;
+    global.flag.flashes = 0;
+}
+
+static void init(void) {
+    flag_init();
     get_config();
     key_init();
     input_init();
@@ -15,7 +21,6 @@ void init(void) {
     delay_longtime(20);
     //display_power_on_warning();
     //delay_longtime(20);
-    //lcd12864_gdram_clear();
     EA = 1;
 }
 

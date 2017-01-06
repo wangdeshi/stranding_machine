@@ -44,6 +44,12 @@ define move_file
 	fi; 
 endef
 
+define move_lnk_file
+	if [ -f *.lnk ]; then \
+		mv *.lnk $(mkdir); \
+	fi;
+endef
+
 all : 
 	@mkdir -p $(MAKEROOT)/out; 
 	@$(call build_obj)
@@ -52,6 +58,7 @@ all :
 	@#makebin $(mkdir)main.ihx strand.bin
 	@packihx $(mkdir)main.ihx > strand.hex
 	@#@objcopy -I ihex -O binary $(mkdir)strand.hex $(mkdir)strand.bin
+	@$(call move_lnk_file)
 clean :
 	@rm -rf out
 	@rm -rf *.lnk

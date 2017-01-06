@@ -57,8 +57,9 @@ static void get_group_config(uint8 group_id) {
 static void get_all_group_config(void) {
     uint8 group_id;
 
+    fill_default_group_config(0);
     global.cfg.groups.num = eeprom_read(CONFIG_ADDRESS_GROUPS_NUM);
-    for (group_id = 0; group_id < MAX_GROUP_NUM; group_id++) {
+    for (group_id = 0; group_id < global.cfg.groups.num; group_id++) {
         get_group_config(group_id);
     }
 }
@@ -70,19 +71,10 @@ void get_config(void) {
     magic = get_magic_config();
     if (magic != config_magic) {
         /* default system config */
-        global.cfg.system.speed_voltage = 2;
-        global.cfg.system.ahead = 30;
-        global.cfg.system.pulse = 1;
+        fill_default_system_config();
 
         /* default group config */
-        global.cfg.groups.num = 0;
-        for (group_id = 0; group_id < MAX_GROUP_NUM; group_id++) {
-            global.cfg.groups.group[group_id].isconfig = 0;
-            global.cfg.groups.group[group_id].dir = 0;
-            global.cfg.groups.group[group_id].speed_percentage = 0;
-            global.cfg.groups.group[group_id].ahead = 0;
-            global.cfg.groups.group[group_id].arrival = 0;
-        }
+        fill_default_group_config(1);
 
         /* write to eeprom */
         set_magic_config();
@@ -132,6 +124,34 @@ void set_all_group_config(void) {
     eeprom_write(CONFIG_ADDRESS_GROUPS_NUM, global.cfg.groups.num);
     for (group_id = 0; group_id < MAX_GROUP_NUM; group_id++) {
         set_group_config(group_id);
+    }
+}
+
+void fill_default_system_config(void) {
+    global.cfg.system.speed_voltage = 2;
+    global.cfg.system.ahead = 30;
+    global.cfg.system.pulse = 1;
+}
+
+void fill_default_group_config(uint8 group_nums) {
+    uint8 group_id;
+
+    global.cfg.groups.num = group_nums;
+
+    for (group_id = 0; group_id < group_nums; group_id++) {
+        global.cfg.groups.group[group_id].isconfig = 1;
+        global.cfg.groups.group[group_id].dir = CONFIG_GROUP_DIR_FORWARD;
+        global.cfg.groups.group[group_id].speed_percentage = 1;
+        global.cfg.groups.group[group_id].ahead = 0;
+        global.cfg.groups.group[group_id].arrival = 0;
+    }
+
+    for (group_id = group_nums; group_id < MAX_GROUP_NUM; group_id++) {
+        global.cfg.groups.group[group_id].isconfig = 0;
+        global.cfg.groups.group[group_id].dir = 0;
+        global.cfg.groups.group[group_id].speed_percentage = 0;
+        global.cfg.groups.group[group_id].ahead = 0;
+        global.cfg.groups.group[group_id].arrival = 0;
     }
 }
 

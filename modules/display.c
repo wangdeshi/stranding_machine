@@ -134,30 +134,71 @@ static void display_process_page_user_config(void) {
     }
 
     /* key process */
-    ///TODO
     switch (item) {
         case 0:
-            digit_bits = get_digit_bits(global.cfg.groups.num);
             if (global.key.key_add) {
-            
+                global.cfg.groups.num = bound_add(global.cfg.groups.num, (uint8)util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
             }
             if (global.key.key_sub) {
-            
+                global.cfg.groups.num = bound_sub(global.cfg.groups.num, (uint8)util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
             }
+            fill_default_group_config(global.cfg.groups.num);
+            digit_bits = get_digit_bits(global.cfg.groups.num);
             break;
         case 1:
+            if (global.key.key_add) {
+                group_id = bound_add(group_id, (uint8)util_pow(10, offset), 0, global.cfg.groups.num - 1);
+            }
+            if (global.key.key_sub) {
+                group_id = bound_sub(group_id, (uint8)util_pow(10, offset), 0, global.cfg.groups.num - 1);
+            }
             digit_bits = get_digit_bits(group_id);
             break;
         case 2:
+            ///TODO
             digit_bits = get_digit_bits(global.cfg.groups.group[group_id].arrival);
             break;
         case 3:
+            if (global.key.key_add) {
+                global.cfg.groups.group[group_id].speed_percentage = bound_add(
+                        global.cfg.groups.group[group_id].speed_percentage, 
+                        (uint8)util_pow(10, offset), 
+                        USER_CFG_MIN_SPEED_PERCENTAGE, 
+                        USER_CFG_MAX_SPEED_PERCENTAGE);
+            }
+            if (global.key.key_sub) {
+                global.cfg.groups.group[group_id].speed_percentage = bound_sub(
+                        global.cfg.groups.group[group_id].speed_percentage, 
+                        (uint8)util_pow(10, offset), 
+                        USER_CFG_MIN_SPEED_PERCENTAGE, 
+                        USER_CFG_MAX_SPEED_PERCENTAGE);
+            }
             digit_bits = get_digit_bits(global.cfg.groups.group[group_id].speed_percentage);
             break;
         case 4:
+            if (global.key.key_add) {
+                global.cfg.groups.group[group_id].dir = CONFIG_GROUP_DIR_FORWARD;
+            }
+            if (global.key.key_sub) {
+                global.cfg.groups.group[group_id].dir = CONFIG_GROUP_DIR_REVERSE;
+            }
             digit_bits = 0;
             break;
         case 5:
+            if (global.key.key_add) {
+                global.cfg.groups.group[group_id].ahead = bound_add(
+                        global.cfg.groups.group[group_id].ahead, 
+                        (uint8)util_pow(10, offset), 
+                        USER_CFG_MIN_AHEAD, 
+                        USER_CFG_MAX_AHEAD);
+            }
+            if (global.key.key_sub) {
+                global.cfg.groups.group[group_id].ahead = bound_sub(
+                        global.cfg.groups.group[group_id].ahead, 
+                        (uint8)util_pow(10, offset), 
+                        USER_CFG_MIN_AHEAD, 
+                        USER_CFG_MAX_AHEAD);
+            }
             digit_bits = get_digit_bits(global.cfg.groups.group[group_id].ahead);
             break;
         default:
@@ -165,35 +206,27 @@ static void display_process_page_user_config(void) {
             break;
     }
     
+    offset = bound(offset, 0, digit_bits - 1);
+
     if (digit_bits) {
         if (global.key.key_left) {
-            offset++;
-            if (offset >= digit_bits) {
-                offset = digit_bits - 1;
-            }
+            offset = bound_add(offset, 1, 0, digit_bits - 1);
         } 
         if (global.key.key_right) {
-            if (offset > 0) {
-                offset--;
-            }
+            offset = bound_sub(offset, 1, 0, digit_bits - 1);
         }
     }
     if (global.key.key_up) {
         offset = 0;
-        if (item > 0) {
-            item--;
-        }
+        item = bound_sub(item, 1, 0, 5);
     } 
     if (global.key.key_down) {
         offset = 0;
-        item++;
-        if (item > 5) {
-            item = 5;
-        }
+        item = bound_add(item, 1, 0, 5);
     }
     if (global.key.key_enter) {
         global.display.page_id = DISPLAT_PAGE_ID_WORKING;
-        ///TODO:save
+        set_all_group_config();
     }
 }
 

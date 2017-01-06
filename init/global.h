@@ -9,6 +9,22 @@
 #include "display.h"
 #include "strand.h"
 
+#define SYS_CFG_MAX_PULSE               10
+#define SYS_CFG_MIN_PULSE               10
+#define SYS_CFG_MAX_AHEAD               50
+#define SYS_CFG_MIN_AHEAD               0
+#define SYS_CFG_MAX_SPEED_VOLTAGE       3
+#define SYS_CFG_MIN_SPEED_VOLTAGE       1
+
+#define USER_CFG_MAX_GROUPS             30
+#define USER_CFG_MIN_GROUPS             1
+#define USER_CFG_MAX_ARRIVAL            99999
+#define USER_CFG_MIN_ARRIVAL            0
+#define USER_CFG_MAX_SPEED_PERCENTAGE   99 
+#define USER_CFG_MIN_SPEED_PERCENTAGE   1
+#define USER_CFG_MAX_AHEAD              99
+#define USER_CFG_MIN_AHEAD              0
+
 struct GLOBAL_FLAG {
     uint8 f10ms;
     uint8 f50ms;

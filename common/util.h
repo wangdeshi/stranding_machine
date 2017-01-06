@@ -3,12 +3,18 @@
 
 #include "type.h"
 
-void delay_us1(uint32 us);
+void delay(uint8 x);
 
-void delay(uint8 c);
-
-void delay_longtime(uint8 c);
+void delay_longtime(uint8 x);
 
 uint8 get_digit_bits(uint32 digit);
+
+uint8 bound(uint8 x, uint8 min, uint8 max);
+
+uint8 bound_add(uint8 x, uint8 y, uint8 min, uint8 max);
+
+uint8 bound_sub(uint8 x, uint8 y, uint8 min, uint8 max);
+
+uint32 util_pow(uint8 x, uint8 y);
 
 #endif
