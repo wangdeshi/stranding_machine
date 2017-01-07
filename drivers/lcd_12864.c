@@ -5,10 +5,10 @@ static void lcd12864_write_command(uint8 cmd) {
 	RS = 0;
 	RW = 0;
 	E = 0;
-	delay(3);
+	delay(1);
 	P0 = cmd;
 	E = 1;
-	delay(3);
+	delay(1);
 	E = 0;
 }
 
@@ -16,10 +16,10 @@ static void lcd12864_write_date(uint8 date) {
 	RS = 1;
 	RW = 0;
 	E = 0;
-	delay(3);
+	delay(1);
 	P0 = date;
 	E = 1;
-	delay(3);
+	delay(1);
 	E = 0;
 }
 
@@ -29,12 +29,12 @@ static uint8 lcd12864_read_date(void) {
 	RS = 1;
 	RW = 1;
 	E = 0;
-	delay(3);
+	delay(1);
 	E = 1;
 	date = P0;
-	delay(3);
+	delay(1);
 	E = 0;
-	delay(3);
+	delay(1);
 
 	return date;
 }

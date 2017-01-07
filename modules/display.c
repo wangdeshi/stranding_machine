@@ -1,3 +1,4 @@
+#include "lcd_12864.h"
 #include "lcd.h"
 #include "display.h"
 #include "font.h"
@@ -33,6 +34,7 @@ static void display_show_flashes_digit(uint8 addr, uint8 n, uint32 digit, uint8 
 static void display_process_page_working(void) {
     if (last_page_id != global.display.page_id) {
         last_page_id = global.display.page_id;
+        lcd12864_ddram_clear();
         lcd_show_picture(pixel_working);
     }
 
@@ -74,6 +76,7 @@ static void display_process_page_user_config(void) {
 
     if (last_page_id != global.display.page_id) {
         last_page_id = global.display.page_id;
+        lcd12864_ddram_clear();
         group_id = 0;
         item = 0;
         offset = 0;
@@ -234,6 +237,7 @@ static void display_process_page_user_config(void) {
 static void display_process_page_system_config(void) {
     if (last_page_id != global.display.page_id) {
         last_page_id = global.display.page_id;
+        lcd12864_ddram_clear();
         lcd_show_picture(pixel_system_config);
     }
 
