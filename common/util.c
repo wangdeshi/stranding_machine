@@ -37,7 +37,7 @@ uint8 get_digit_bits(uint32 digit) {
     return 1;
 }
 
-uint8 bound(uint8 x, uint8 min, uint8 max) {
+uint32 bound(uint32 x, uint32 min, uint32 max) {
     if (x < min) {
         x = min;
     }
@@ -49,7 +49,7 @@ uint8 bound(uint8 x, uint8 min, uint8 max) {
     return x;
 }
 
-uint8 bound_add(uint8 x, uint8 y, uint8 min, uint8 max) {
+uint32 bound_add(uint32 x, uint32 y, uint32 min, uint32 max) {
     if (x >= max) {
         return max;
     }
@@ -59,7 +59,7 @@ uint8 bound_add(uint8 x, uint8 y, uint8 min, uint8 max) {
     return bound(x, min, max);
 }
 
-uint8 bound_sub(uint8 x, uint8 y, uint8 min, uint8 max) {
+uint32 bound_sub(uint32 x, uint32 y, uint32 min, uint32 max) {
     if (x <= min) {
         return min;
     }

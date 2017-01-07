@@ -6,18 +6,22 @@
 #include "util.h"
 
 static uint8 xdata last_page_id = 255;
+static uint8 cgram_addr[2];
 
 static void display_show_ascii_zheng_fan(uint8 dir) {
     if (dir == CONFIG_GROUP_DIR_FORWARD) {
-        lcd_show_ascii(0x8e, gb2312_zheng, 2);
+        lcd12864_cgram_write(0x00, cgram_zheng, 32);
+        cgram_addr[0] = 0x00;
+        cgram_addr[1] = 0x00;
+        lcd_show_ascii(0x8f, cgram_addr, 2);
     } else {
-        lcd_show_ascii(0x8e, gb2312_fan, 2);
+        lcd_show_ascii(0x8f, gb2312_fan, 2);
     }
 }
 
 static void display_show_flashes_ascii_zheng_fan(uint8 dir) {
     if (global.flag.flashes) {
-        lcd_show_ascii(0x8e, ascii_space, 2);
+        lcd_show_ascii(0x8f, ascii_space, 2);
     } else {
         display_show_ascii_zheng_fan(dir);
     }
@@ -86,50 +90,50 @@ static void display_process_page_user_config(void) {
     /* refresh */
     switch (item) {
         case 0:
-            display_show_flashes_digit(0x84, 2, global.cfg.groups.num, offset);
-            lcd_show_digit_normal(0x87, 2, group_id);
-            lcd_show_digit_normal(0x92, 10, global.cfg.groups.group[group_id].arrival);
-            lcd_show_digit_normal(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage);
+            display_show_flashes_digit(0x83, 2, global.cfg.groups.num, offset);
+            lcd_show_digit_normal(0x86, 2, group_id);
+            lcd_show_digit_normal(0x93, 6, global.cfg.groups.group[group_id].arrival);
+            lcd_show_digit_normal(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage);
             display_show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_normal(0x9d, 2, global.cfg.groups.group[group_id].ahead);
             break;
         case 1:
-            lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-            display_show_flashes_digit(0x87, 2, group_id, offset);
-            lcd_show_digit_normal(0x92, 10, global.cfg.groups.group[group_id].arrival);
-            lcd_show_digit_normal(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage);
+            lcd_show_digit_normal(0x83, 2, global.cfg.groups.num);
+            display_show_flashes_digit(0x86, 2, group_id, offset);
+            lcd_show_digit_normal(0x93, 6, global.cfg.groups.group[group_id].arrival);
+            lcd_show_digit_normal(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage);
             display_show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_normal(0x9d, 2, global.cfg.groups.group[group_id].ahead);
             break;
         case 2:
-            lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-            lcd_show_digit_normal(0x87, 2, group_id);
-            display_show_flashes_digit(0x92, 10, global.cfg.groups.group[group_id].arrival, offset);
-            lcd_show_digit_normal(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage);
+            lcd_show_digit_normal(0x83, 2, global.cfg.groups.num);
+            lcd_show_digit_normal(0x86, 2, group_id);
+            display_show_flashes_digit(0x93, 6, global.cfg.groups.group[group_id].arrival, offset);
+            lcd_show_digit_normal(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage);
             display_show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_normal(0x9d, 2, global.cfg.groups.group[group_id].ahead);
             break;
         case 3:
-            lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-            lcd_show_digit_normal(0x87, 2, group_id);
-            lcd_show_digit_normal(0x92, 10, global.cfg.groups.group[group_id].arrival);
-            display_show_flashes_digit(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage, offset);
+            lcd_show_digit_normal(0x83, 2, global.cfg.groups.num);
+            lcd_show_digit_normal(0x86, 2, group_id);
+            lcd_show_digit_normal(0x93, 6, global.cfg.groups.group[group_id].arrival);
+            display_show_flashes_digit(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, offset);
             display_show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_normal(0x9d, 2, global.cfg.groups.group[group_id].ahead);
             break;
         case 4:
-            lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-            lcd_show_digit_normal(0x87, 2, group_id);
-            lcd_show_digit_normal(0x92, 10, global.cfg.groups.group[group_id].arrival);
-            lcd_show_digit_normal(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage);
+            lcd_show_digit_normal(0x83, 2, global.cfg.groups.num);
+            lcd_show_digit_normal(0x86, 2, group_id);
+            lcd_show_digit_normal(0x93, 6, global.cfg.groups.group[group_id].arrival);
+            lcd_show_digit_normal(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage);
             display_show_flashes_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_normal(0x9d, 2, global.cfg.groups.group[group_id].ahead);
             break;
         case 5:
-            lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-            lcd_show_digit_normal(0x87, 2, group_id);
-            lcd_show_digit_normal(0x92, 10, global.cfg.groups.group[group_id].arrival);
-            lcd_show_digit_normal(0x8a, 2, global.cfg.groups.group[group_id].speed_percentage);
+            lcd_show_digit_normal(0x83, 2, global.cfg.groups.num);
+            lcd_show_digit_normal(0x86, 2, group_id);
+            lcd_show_digit_normal(0x93, 6, global.cfg.groups.group[group_id].arrival);
+            lcd_show_digit_normal(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage);
             display_show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             display_show_flashes_digit(0x9d, 2, global.cfg.groups.group[group_id].ahead, offset);
             break;
@@ -141,39 +145,53 @@ static void display_process_page_user_config(void) {
     switch (item) {
         case 0:
             if (global.key.key_add) {
-                global.cfg.groups.num = bound_add(global.cfg.groups.num, (uint8)util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                global.cfg.groups.num = bound_add(global.cfg.groups.num, util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                fill_default_group_config(global.cfg.groups.num);
             }
             if (global.key.key_sub) {
-                global.cfg.groups.num = bound_sub(global.cfg.groups.num, (uint8)util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                global.cfg.groups.num = bound_sub(global.cfg.groups.num, util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                fill_default_group_config(global.cfg.groups.num);
             }
-            fill_default_group_config(global.cfg.groups.num);
             digit_bits = get_digit_bits(global.cfg.groups.num);
             break;
         case 1:
             if (global.key.key_add) {
-                group_id = bound_add(group_id, (uint8)util_pow(10, offset), 0, global.cfg.groups.num - 1);
+                group_id = bound_add(group_id, util_pow(10, offset), 0, global.cfg.groups.num - 1);
             }
             if (global.key.key_sub) {
-                group_id = bound_sub(group_id, (uint8)util_pow(10, offset), 0, global.cfg.groups.num - 1);
+                group_id = bound_sub(group_id, util_pow(10, offset), 0, global.cfg.groups.num - 1);
             }
             digit_bits = get_digit_bits(group_id);
             break;
         case 2:
-            ///TODO
+            if (global.key.key_add) {
+                global.cfg.groups.group[group_id].arrival = bound_add(
+                        global.cfg.groups.group[group_id].arrival, 
+                        util_pow(10, offset), 
+                        USER_CFG_MIN_ARRIVAL, 
+                        USER_CFG_MAX_ARRIVAL);
+            }
+            if (global.key.key_sub) {
+                global.cfg.groups.group[group_id].arrival = bound_sub(
+                        global.cfg.groups.group[group_id].arrival, 
+                        util_pow(10, offset), 
+                        USER_CFG_MIN_ARRIVAL, 
+                        USER_CFG_MAX_ARRIVAL);
+            }
             digit_bits = get_digit_bits(global.cfg.groups.group[group_id].arrival);
             break;
         case 3:
             if (global.key.key_add) {
                 global.cfg.groups.group[group_id].speed_percentage = bound_add(
                         global.cfg.groups.group[group_id].speed_percentage, 
-                        (uint8)util_pow(10, offset), 
+                        util_pow(10, offset), 
                         USER_CFG_MIN_SPEED_PERCENTAGE, 
                         USER_CFG_MAX_SPEED_PERCENTAGE);
             }
             if (global.key.key_sub) {
                 global.cfg.groups.group[group_id].speed_percentage = bound_sub(
                         global.cfg.groups.group[group_id].speed_percentage, 
-                        (uint8)util_pow(10, offset), 
+                        util_pow(10, offset), 
                         USER_CFG_MIN_SPEED_PERCENTAGE, 
                         USER_CFG_MAX_SPEED_PERCENTAGE);
             }
@@ -192,14 +210,14 @@ static void display_process_page_user_config(void) {
             if (global.key.key_add) {
                 global.cfg.groups.group[group_id].ahead = bound_add(
                         global.cfg.groups.group[group_id].ahead, 
-                        (uint8)util_pow(10, offset), 
+                        util_pow(10, offset), 
                         USER_CFG_MIN_AHEAD, 
                         USER_CFG_MAX_AHEAD);
             }
             if (global.key.key_sub) {
                 global.cfg.groups.group[group_id].ahead = bound_sub(
                         global.cfg.groups.group[group_id].ahead, 
-                        (uint8)util_pow(10, offset), 
+                        util_pow(10, offset), 
                         USER_CFG_MIN_AHEAD, 
                         USER_CFG_MAX_AHEAD);
             }

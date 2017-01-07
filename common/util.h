@@ -9,11 +9,11 @@ void delay_longtime(uint8 x);
 
 uint8 get_digit_bits(uint32 digit);
 
-uint8 bound(uint8 x, uint8 min, uint8 max);
+uint32 bound(uint32 x, uint32 min, uint32 max);
 
-uint8 bound_add(uint8 x, uint8 y, uint8 min, uint8 max);
+uint32 bound_add(uint32 x, uint32 y, uint32 min, uint32 max);
 
-uint8 bound_sub(uint8 x, uint8 y, uint8 min, uint8 max);
+uint32 bound_sub(uint32 x, uint32 y, uint32 min, uint32 max);
 
 uint32 util_pow(uint8 x, uint8 y);
 
