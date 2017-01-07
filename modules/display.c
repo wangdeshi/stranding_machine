@@ -31,9 +31,9 @@ static void display_show_flashes_digit(uint8 addr, uint8 n, uint32 digit, uint8 
 }
 
 static void display_process_page_working(void) {
-    if (global.display.page_id != last_page_id) {
-        lcd_clear();
-        //lcd_show_picture(pixel_working);
+    if (last_page_id != global.display.page_id) {
+        last_page_id = global.display.page_id;
+        lcd_show_picture(pixel_working);
     }
 
     /* refresh raw1 */
@@ -55,11 +55,12 @@ static void display_process_page_working(void) {
 
     /* key process */
     ///TODO
+    if (global.key.key_menu) {
+        global.key.key_menu = 0;
+        global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
+    }
     if (global.strand.state == STRAND_STATE_STANDBY) {
-        if (global.key.key_menu) {
-            global.key.key_menu = 0;
-            global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
-        }
+
     } else {
     
     }
@@ -71,12 +72,12 @@ static void display_process_page_user_config(void) {
     static uint8 xdata offset = 0;
     uint8 digit_bits;
 
-    if (global.display.page_id != last_page_id) {
+    if (last_page_id != global.display.page_id) {
+        last_page_id = global.display.page_id;
         group_id = 0;
         item = 0;
         offset = 0;
-        lcd_clear();
-        //lcd_show_picture(pixel_user_config);
+        lcd_show_picture(pixel_user_config);
     }
 
     /* refresh */
@@ -231,9 +232,9 @@ static void display_process_page_user_config(void) {
 }
 
 static void display_process_page_system_config(void) {
-    if (global.display.page_id != last_page_id) {
-        lcd_clear();
-        //lcd_show_picture(pixel_system_config);
+    if (last_page_id != global.display.page_id) {
+        last_page_id = global.display.page_id;
+        lcd_show_picture(pixel_system_config);
     }
 
     /* refresh raw2 */
@@ -276,8 +277,6 @@ void display_process(void) {
             display_process_page_null();
             break;
     }
-
-    last_page_id = global.display.page_id;
 }
 
 void display_power_on_logo(void) {

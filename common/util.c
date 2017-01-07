@@ -3,7 +3,7 @@
 void delay(uint8 x) {
     uint8 i;
 
-    i = 85;
+    i = 15;
 
     while (x--) {
         while (i--);

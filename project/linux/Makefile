@@ -55,9 +55,10 @@ all :
 	@$(call build_obj)
 	@$(CC) $(mkdir)main.rel `ls $(mkdir)*.rel|grep -v main.rel` $(LD_FLAGS)
 	@$(call move_file)
-	@#makebin $(mkdir)main.ihx strand.bin
-	@packihx $(mkdir)main.ihx > strand.hex
-	@#@objcopy -I ihex -O binary $(mkdir)strand.hex $(mkdir)strand.bin
+	@makebin $(mkdir)main.ihx strand.bin
+	@#makebin $(mkdir)main.ihx strand.hex
+	@#packihx $(mkdir)main.ihx > strand.hex
+	@#objcopy -I ihex -O binary $(mkdir)strand.hex $(mkdir)strand.bin
 	@$(call move_lnk_file)
 clean :
 	@rm -rf out

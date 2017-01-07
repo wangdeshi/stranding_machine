@@ -122,7 +122,7 @@ void set_all_group_config(void) {
     uint8 group_id;
 
     eeprom_write(CONFIG_ADDRESS_GROUPS_NUM, global.cfg.groups.num);
-    for (group_id = 0; group_id < MAX_GROUP_NUM; group_id++) {
+    for (group_id = 0; group_id < global.cfg.groups.num; group_id++) {
         set_group_config(group_id);
     }
 }

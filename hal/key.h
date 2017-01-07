@@ -15,8 +15,10 @@ struct KEY {
     uint8 key_enter;
 };
 
-void key_clear(void);
+extern void key_clear(void);
 
-void key_init(void);
+extern void key_init(void);
+
+extern void time0_process(void) interrupt (1) __using (1);
 
 #endif
