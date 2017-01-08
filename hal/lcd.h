@@ -16,6 +16,8 @@ void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 clear_bit
 
 void lcd_show_ascii(uint8 addr, uint8 * ascii, uint8 n);
 
+void lcd_show_cgram(uint8 addr, uint8 index, uint8 n);
+
 void lcd_show_picture(uint8 * picture);
 
 void lcd_clear(void);

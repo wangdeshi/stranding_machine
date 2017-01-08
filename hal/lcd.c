@@ -73,6 +73,14 @@ void lcd_show_ascii(uint8 addr, uint8 * ascii, uint8 n) {
     lcd12864_ddram_write(addr, ascii, n);
 }
 
+void lcd_show_cgram(uint8 addr, uint8 index, uint8 n) {
+    uint8 cgram_addr[2];
+
+    cgram_addr[0] = 0x00;
+    cgram_addr[1] = index;
+    lcd_show_ascii(addr, cgram_addr, n);
+}
+
 void lcd_show_picture(uint8 * picture) {
     lcd12864_gdram_write(picture);
 }

@@ -6,16 +6,14 @@
 #include "util.h"
 
 static uint8 xdata last_page_id = 255;
-static uint8 cgram_addr[2];
 
 static void display_show_ascii_zheng_fan(uint8 dir) {
     if (dir == CONFIG_GROUP_DIR_FORWARD) {
         lcd12864_cgram_write(0x00, cgram_zheng, 32);
-        cgram_addr[0] = 0x00;
-        cgram_addr[1] = 0x00;
-        lcd_show_ascii(0x8f, cgram_addr, 2);
+        lcd_show_cgram(0x8f, 0, 2);
     } else {
-        lcd_show_ascii(0x8f, gb2312_fan, 2);
+        lcd12864_cgram_write(0x00, cgram_fan, 32);
+        lcd_show_cgram(0x8f, 0, 2);
     }
 }
 
@@ -45,19 +43,26 @@ static void display_process_page_working(void) {
     /* refresh raw1 */
     lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
     if (global.strand.state == STRAND_STATE_STANDBY) {
-        lcd_show_ascii(0x86, gb2312_daiji, 4);
+        lcd12864_cgram_write(0x00, cgram_dai, 32);
+        lcd12864_cgram_write(0x10, cgram_ji, 32);
+        lcd_show_cgram(0x86, 0, 2);
+        lcd_show_cgram(0x87, 2, 2);
     } else {
-        lcd_show_ascii(0x86, gb2312_yunzhuan, 4);
+        lcd12864_cgram_write(0x00, cgram_yun, 32);
+        lcd12864_cgram_write(0x10, cgram_zhuan, 32);
+        lcd_show_cgram(0x86, 0, 2);
+        lcd_show_cgram(0x87, 2, 2);
     }
 
     /* refresh raw2 */
-    lcd_show_digit_normal(0x92, 8, global.strand.group_speed);
+    lcd_show_digit_normal(0x92, 6, global.strand.group_speed);
 
     /* refresh raw3 */
-    lcd_show_digit_normal(0x8a, 8, global.strand.output);
+    lcd_show_digit_normal(0x8a, 6, global.strand.output);
 
     /* refresh raw4 */
-    lcd_show_digit_normal(0x9a, 8, global.strand.group_turns);
+    lcd_show_digit_normal(0x9a, 6, global.strand.group_turns);
+    lcd_show_digit(0x9f, 2, global.strand.group_id, LCD_SHOW_DIGIT_ALIGN_LEFT, 0, 0, 0);
 
     /* key process */
     ///TODO
@@ -260,16 +265,19 @@ static void display_process_page_system_config(void) {
     }
 
     /* refresh raw2 */
-    lcd_show_digit_normal(0x93, 2, global.cfg.system.pulse);
+    lcd_show_digit_normal(0x94, 2, global.cfg.system.pulse);
 
     /* refresh raw3 */
-    lcd_show_digit_normal(0x8b, 2, global.cfg.system.ahead);
+    lcd_show_digit_normal(0x8c, 2, global.cfg.system.ahead);
 
     /* refresh raw4 */
-    lcd_show_digit_normal(0x9b, 2, global.cfg.system.speed_voltage);
+    lcd_show_digit_normal(0x9c, 2, global.cfg.system.speed_voltage);
 
     /* key process */
     ///TODO
+    if (global.key.key_enter) {
+        global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+    }
 }
 
 static void display_process_page_null(void) {
@@ -311,6 +319,7 @@ void display_power_on_warning(void) {
 
 void display_init(void) {
     lcd_init();
-    global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+    //global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+    global.display.page_id = DISPLAT_PAGE_ID_SYSTEM_CONFIG;
 }
 
