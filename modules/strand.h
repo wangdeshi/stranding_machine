@@ -26,6 +26,8 @@ struct STRAND {
     uint32 low_speed_turns;
 };
 
+extern void int1_process(void) interrupt (2);
+
 void strand_process(void);
 
 void strand_init(void);

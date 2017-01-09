@@ -42,7 +42,7 @@ void int0_process(void) interrupt 0 {
 }
 
 /* pulse process */
-void int1_process(void) interrupt 2 {
+void int1_process(void) interrupt (2) {
     static uint8 xdata pulse = 0;
     //uint32 high_speed_turns;
     uint8 group_id;
