@@ -11,6 +11,10 @@ volatile static uint8 xdata key_sub_last, key_sub;
 volatile static uint8 xdata key_zero_last, key_zero;
 volatile static uint8 xdata key_enter_last, key_enter;
 
+volatile static uint8 xdata input_reset_last, input_reset;
+volatile static uint8 xdata input_start_last, input_start;
+volatile static uint8 xdata input_stop_last, input_stop;
+
 static inline uint8 key_check(uint8 key_state, uint8 * key, uint8 * key_last) {
     uint8 ret;
 
@@ -99,6 +103,16 @@ void time0_process(void) interrupt (1) __using (1) {
             global.key.key_zero = 1;        
         }
         K5 = 1;
+
+        if (key_check((INPUT_RESET ? 0 : 1), &input_reset, &input_reset_last)) {
+            global.input.reset = 1;        
+        }
+        if (key_check((INPUT_START ? 0 : 1), &input_start, &input_start_last)) {
+            global.input.start = 1;        
+        }
+        if (key_check((INPUT_STOP ? 0 : 1), &input_stop, &input_stop_last)) {
+            global.input.stop = 1;        
+        }
     }
 }
 

@@ -1,13 +1,6 @@
 #include "input.h"
 #include "global.h"
 
-///FIXME: Eliminate Dithering
-void input_check(void) {
-    global.input.reset = !INPUT_RESET;
-    global.input.start = !INPUT_START;
-    global.input.stop = !INPUT_STOP;
-}
-
 void input_clear(void) {
     global.input.reset = 0;
     global.input.start = 0;
@@ -24,8 +17,6 @@ void input_init(void) {
 	//IT1=1;
 
     /* Others Init */
-    global.input.reset = 0;
-    global.input.start = 0;
-    global.input.stop = 0;
+    input_clear();
     global.input.pulse = 0;
 }

@@ -65,6 +65,10 @@ void lcd_show_digit_normal(uint8 addr, uint8 n, uint32 digit) {
     lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, 0, 0, 0);
 }
 
+void lcd_show_digit_xbits(uint8 addr, uint8 n, uint32 digit, uint8 x) {
+    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 0, 0);
+}
+
 void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 clear_bit) {
     lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, 0, 1, clear_bit);
 }

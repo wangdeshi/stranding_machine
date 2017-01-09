@@ -12,8 +12,6 @@ struct INPUT {
     uint8 pulse;
 };
 
-void input_check(void);
-
 void input_clear(void);
 
 void input_init(void);

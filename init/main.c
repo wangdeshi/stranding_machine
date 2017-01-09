@@ -18,7 +18,9 @@ static void init(void) {
     display_init();
     strand_init();
     display_power_on_logo();
-    delay_longtime(20);
+    if (display_system_config_check() == 0) {
+        delay_longtime(20);
+    }
     //display_power_on_warning();
     //delay_longtime(20);
     EA = 1;
@@ -30,7 +32,6 @@ int main(void) {
     while (1) {
         if (global.flag.f10ms) {
             global.flag.f10ms = 0;
-            input_check();
             //strand_process();
             input_clear();
         }

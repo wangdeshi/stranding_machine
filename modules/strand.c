@@ -157,10 +157,6 @@ void strand_process(void) {
             global.strand.state = STRAND_STATE_STANDBY;
             break;
     }
-
-    global.input.start = 0;
-    global.input.stop = 0;
-    global.input.reset = 0;
 }
 
 void strand_group_init(uint8 group_id) {
