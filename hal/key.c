@@ -32,6 +32,7 @@ static inline uint8 key_check(uint8 key_state, uint8 * key, uint8 * key_last) {
 void time0_process(void) interrupt (1) __using (1) {
     static xdata uint8 count1 = 0, count2 = 3;
     static xdata uint16 count3 = 0, count4 = 2;
+    static xdata uint32 group_last_turns = 0;
     uint8 flag1;
 
     TH0 = (65536 - 1000) / 256;
@@ -55,6 +56,13 @@ void time0_process(void) interrupt (1) __using (1) {
     if (count2 >= 50) {
         count2 = 0;
         global.flag.f50ms = 1;
+        if (global.strand.group_current_turns > group_last_turns) {
+            global.strand.group_current_speed = 
+                (global.strand.group_current_turns - group_last_turns) * 20 * 60;
+        } else {
+            global.strand.group_current_speed = 0;
+        }
+        group_last_turns = global.strand.group_current_turns;
     }
 
     flag1 = 0;
