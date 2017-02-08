@@ -4,6 +4,13 @@
 uint8 speed_percentage_to_voltage(uint8 speed_percentage) {
     uint8 speed_voltage;
 
+    if (speed_percentage < 1) {
+        speed_percentage = 1;
+    }
+    if (speed_percentage > MAX_SPEED_PERCENTAGE) {
+        speed_percentage = MAX_SPEED_PERCENTAGE;
+    }
+
     speed_voltage = ((uint16)(speed_percentage - 1)) * (5 - 1) / (MAX_SPEED_PERCENTAGE - 1) + 1;
 
     return speed_voltage;
@@ -11,9 +18,19 @@ uint8 speed_percentage_to_voltage(uint8 speed_percentage) {
 
 static inline uint8 speed_voltage_to_pwm(uint8 speed_voltage) {
     uint8 speed_pwm;
+    uint8 duty_ratio;
 
-    ///TODO:
-    speed_pwm = speed_voltage;
+    ///FIXME:
+    //f([1V, 5V]) -> pwm[10%, 100%]
+    if (speed_voltage < 1) {
+        speed_voltage = 1;
+    }
+    if (speed_voltage > 5) {
+        speed_voltage = 5;
+    }
+
+    duty_ratio = (uint8)(((uint32)speed_voltage - 1) * (100 - 10) / (5 - 1) + 10);
+    speed_pwm = (uint8)(255 - 255 * (uint32)duty_ratio / 100);
 
     return speed_pwm;
 }
@@ -78,7 +95,7 @@ void output_init(void) {
 
     /* Others Init */
     global.output.start = 0;
-    global.output.stop = 1;
+    global.output.stop = 0;
     global.output.dir = CONFIG_GROUP_DIR_FORWARD;
     global.output.speed_voltage = 0;
     global.output.beer = 0;
@@ -86,6 +103,6 @@ void output_init(void) {
     OUTPUT_SC_BACK = 0;
 
     /* Start PWM */
-	//CR = 1;
+	CR = 1;
 }
 
