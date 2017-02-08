@@ -136,6 +136,7 @@ void strand_process(void) {
         return;
     }
 
+#if 0
     if (global.input.reset) {
         if (global.strand.group_current_turns) {
             strand_group_init(global.strand.group_id);
@@ -146,6 +147,7 @@ void strand_process(void) {
             }
         }
     }
+#endif
 
     group_id = global.strand.group_id;
 
