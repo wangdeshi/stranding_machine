@@ -2,8 +2,6 @@
 #include "lcd.h"
 #include "util.h"
 
-static uint8 xdata lcd_data[16];
-
 static inline uint8 ascii(uint8 x) { return (0x30 + x); }
 
 static uint8 lcd_digit_get_bit(uint32 digit, uint8 x) {
@@ -16,10 +14,12 @@ static uint8 lcd_digit_get_bit(uint32 digit, uint8 x) {
     return (digit % 10);
 }
 
+static uint8 xdata lcd_data[16];
+static uint8 xdata digit_bits;
+static uint8 xdata show_bits;
+static uint8 xdata start;
+
 void lcd_show_digit(uint8 addr, uint8 n, uint32 digit, uint8 align, uint8 show_digit_bits, uint8 clear_enable, uint8 clear_bit) {
-    uint8 digit_bits;
-    uint8 show_bits;
-    uint8 start;
     uint8 i;
 
     if (n > 16) {
@@ -61,17 +61,17 @@ void lcd_show_digit(uint8 addr, uint8 n, uint32 digit, uint8 align, uint8 show_d
     lcd12864_ddram_write(addr, lcd_data, n);
 }
 
-void lcd_show_digit_normal(uint8 addr, uint8 n, uint32 digit) {
-    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, 0, 0, 0);
-}
+//void lcd_show_digit_normal(uint8 addr, uint8 n, uint32 digit) {
+//    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, 0, 0, 0);
+//}
 
-void lcd_show_digit_xbits(uint8 addr, uint8 n, uint32 digit, uint8 x) {
-    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 0, 0);
-}
+//void lcd_show_digit_xbits(uint8 addr, uint8 n, uint32 digit, uint8 x) {
+//    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 0, 0);
+//}
 
-void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit) {
-    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 1, clear_bit);
-}
+//void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit) {
+//    lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 1, clear_bit);
+//}
 
 void lcd_show_ascii(uint8 addr, uint8 * ascii, uint8 n) {
     lcd12864_ddram_write(addr, ascii, n);

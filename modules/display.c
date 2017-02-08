@@ -27,9 +27,11 @@ static void show_flashes_ascii_zheng_fan(uint8 dir) {
 
 static void show_flashes_digit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit) {
     if (global.flag.flashes) {
-        lcd_show_digit_clear_bit(addr, n, digit, x, clear_bit);
+        //lcd_show_digit_clear_bit(addr, n, digit, x, clear_bit);
+        lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 1, clear_bit);
     } else {
         lcd_show_digit_xbits(addr, n, digit, x);
+        //lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 0, 0);
     }
 }
 
@@ -93,52 +95,54 @@ static void process_page_user_config(void) {
     /* refresh */
     switch (item) {
         case 0:
-            show_flashes_digit(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS, offset);
-            lcd_show_digit_xbits(0x86, 2, group_id, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_ARRIVAL);
-            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE);
+            show_flashes_digit(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS), offset);
+            lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL));
+            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD);
+            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
         case 1:
-            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS);
-            show_flashes_digit(0x86, 2, group_id, USER_CFG_MAX_GROUPS, offset);
-            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_ARRIVAL);
-            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE);
+            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
+            show_flashes_digit(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS), offset);
+            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL));
+            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD);
+            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
         case 2:
-            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x86, 2, group_id, USER_CFG_MAX_GROUPS);
-            show_flashes_digit(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_GROUPS, offset);
-            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE);
+            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
+            show_flashes_digit(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL), offset);
+            //show_flashes_digit(0x93, 6, 2000, get_digit_bits(USER_CFG_MAX_ARRIVAL), offset);
+            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
+            //lcd_show_digit_xbits(0x8b, 2, 19, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD);
+            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
         case 3:
-            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x86, 2, group_id, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_ARRIVAL);
-            show_flashes_digit(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE, offset);
+            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL));
+            show_flashes_digit(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE), offset);
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD);
+            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
         case 4:
-            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x86, 2, group_id, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_ARRIVAL);
-            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE);
+            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL));
+            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_flashes_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD);
+            lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
         case 5:
-            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x86, 2, group_id, USER_CFG_MAX_GROUPS);
-            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, USER_CFG_MAX_ARRIVAL);
-            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, USER_CFG_MAX_SPEED_PERCENTAGE);
+            lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
+            lcd_show_digit_xbits(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL));
+            lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
-            show_flashes_digit(0x9d, 2, global.cfg.groups.group[group_id].ahead, USER_CFG_MAX_AHEAD, offset);
+            show_flashes_digit(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD), offset);
             break;
         default:
             break;
@@ -271,19 +275,19 @@ static void process_page_system_config(void) {
     /* refresh */
     switch (item) {
         case 0:
-            show_flashes_digit(0x94, 2, global.cfg.system.pulse, SYS_CFG_MAX_PULSE, offset);
-            lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, SYS_CFG_MAX_AHEAD);
-            lcd_show_digit_xbits(0x9c, 2, global.cfg.system.speed_voltage, SYS_CFG_MAX_SPEED_VOLTAGE);
+            show_flashes_digit(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE), offset);
+            lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD));
+            lcd_show_digit_xbits(0x9c, 2, global.cfg.system.speed_voltage, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE));
             break;
         case 1:
-            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, SYS_CFG_MAX_PULSE);
-            show_flashes_digit(0x8c, 2, global.cfg.system.ahead, SYS_CFG_MAX_AHEAD, offset);
-            lcd_show_digit_xbits(0x9c, 2, global.cfg.system.speed_voltage, SYS_CFG_MAX_SPEED_VOLTAGE);
+            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
+            show_flashes_digit(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD), offset);
+            lcd_show_digit_xbits(0x9c, 2, global.cfg.system.speed_voltage, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE));
             break;
         case 2:
-            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, SYS_CFG_MAX_PULSE);
-            lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, SYS_CFG_MAX_AHEAD);
-            show_flashes_digit(0x9c, 2, global.cfg.system.speed_voltage, SYS_CFG_MAX_SPEED_VOLTAGE, offset);
+            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
+            lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD));
+            show_flashes_digit(0x9c, 2, global.cfg.system.speed_voltage, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE), offset);
             break;
         default:
             break;

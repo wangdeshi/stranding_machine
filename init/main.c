@@ -33,15 +33,15 @@ int main(void) {
         if (global.flag.f10ms) {
             global.flag.f10ms = 0;
             //strand_process();
+            input_clear();
         }
 
         if (global.flag.f50ms) {
             global.flag.f50ms = 0;
             display_process();
+            key_clear();
         }
 
-        input_clear();
-        key_clear();
     }
 
     return 0;
