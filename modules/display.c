@@ -27,7 +27,7 @@ static void show_flashes_ascii_zheng_fan(uint8 dir) {
 
 static void show_flashes_digit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit) {
     if (global.flag.flashes) {
-        lcd_show_digit_clear_bit(addr, n, digit, clear_bit);
+        lcd_show_digit_clear_bit(addr, n, digit, x, clear_bit);
     } else {
         lcd_show_digit_xbits(addr, n, digit, x);
     }
@@ -42,7 +42,9 @@ static void process_page_working(void) {
 
     /* refresh raw1 */
     lcd_show_digit_normal(0x84, 2, global.cfg.groups.num);
-    if (global.strand.state == STRAND_STATE_STANDBY) {
+    if ((global.strand.state == STRAND_STATE_STANDBY) ||
+            (global.strand.state == STRAND_STATE_PAUSE) ||
+            (global.strand.state == STRAND_STATE_FINISH)) {
         lcd12864_cgram_write(0x00, cgram_dai, 32);
         lcd12864_cgram_write(0x10, cgram_ji, 32);
         lcd_show_cgram(0x86, 0, 2);
@@ -55,13 +57,13 @@ static void process_page_working(void) {
     }
 
     /* refresh raw2 */
-    lcd_show_digit_normal(0x92, 6, global.strand.group_speed);
+    lcd_show_digit_normal(0x92, 6, global.strand.group_current_speed);
 
     /* refresh raw3 */
     lcd_show_digit_normal(0x8a, 6, global.strand.output);
 
     /* refresh raw4 */
-    lcd_show_digit_normal(0x9a, 6, global.strand.group_turns);
+    lcd_show_digit_normal(0x9a, 6, global.strand.group_current_turns);
     lcd_show_digit(0x9f, 2, global.strand.group_id, LCD_SHOW_DIGIT_ALIGN_LEFT, 0, 0, 0);
 
     /* key process */
@@ -341,6 +343,7 @@ static void process_page_system_config(void) {
     }
     if (global.key.key_enter) {
         global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+        set_system_config();
     }
 }
 

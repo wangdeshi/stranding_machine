@@ -43,11 +43,11 @@ void time0_process(void) interrupt (1) __using (1) {
         global.flag.flashes = !global.flag.flashes;
     }
 
-    if (global.strand.brake_state == STRAND_BRAKE_STATE_TIMER_START) {
+    if (global.strand.state == STRAND_STATE_BRAKING) {
         count3++;
         if (count3 >= 700) {
             count3 = 0;
-            global.strand.brake_state = STRAND_BRAKE_STATE_TIMER_TIMEOUT;
+            global.strand.state = STRAND_STATE_BRAKE_DONE;
         }
     }
 

@@ -14,7 +14,7 @@ void lcd_show_digit_normal(uint8 addr, uint8 n, uint32 digit);
 
 void lcd_show_digit_xbits(uint8 addr, uint8 n, uint32 digit, uint8 x);
 
-void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 clear_bit);
+void lcd_show_digit_clear_bit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit);
 
 void lcd_show_ascii(uint8 addr, uint8 * ascii, uint8 n);
 

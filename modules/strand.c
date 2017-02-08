@@ -4,7 +4,7 @@
 static inline void motor_run_low_speed(uint8 group_id) {
     global.output.speed_voltage = global.cfg.system.speed_voltage;
     output_flush_speed();
-    global.strand.group_turns_low_speed = 0;
+    global.strand.group_current_low_speed_turns = 0;
 
     global.output.start = 1;
     global.output.stop = 0;
@@ -26,14 +26,43 @@ static inline void motor_braking_start(void) {
     global.output.start = 0;
     global.output.stop = 1;
     output_flush_start_stop_dir();
-    global.strand.brake_state = STRAND_BRAKE_STATE_TIMER_START;
 }
 
 static inline void motor_braking_stop(void) {
     global.output.start = 0;
     global.output.stop = 0;
     output_flush_start_stop_dir();
-    global.strand.brake_state = STRAND_BRAKE_STATE_TIMER_STOP;
+}
+
+static void strand_group_init(uint8 group_id) {
+    if (group_id >= global.cfg.groups.num) {
+        return;
+    }
+
+    global.strand.state = STRAND_STATE_STANDBY;
+    global.strand.group_id = group_id;
+    global.strand.group_current_speed = 0;
+    global.strand.group_current_turns = 0;
+    global.strand.group_current_low_speed_turns = 0;
+    
+    global.strand.group_expected_low_speed_turns = global.cfg.system.ahead + 
+        global.cfg.groups.group[group_id].ahead; 
+
+    /*
+    global.strand.group_expected_low_speed_turns = (global.cfg.groups.group[group_id].arrival > 
+            (global.cfg.groups.group[group_id].ahead + 
+             global.cfg.system.ahead)) ? 
+        (global.cfg.system.ahead + 
+         global.cfg.groups.group[group_id].ahead) : 
+        global.cfg.groups.group[group_id].arrival; 
+    */
+
+    global.strand.group_expected_high_speed_turns = (global.cfg.groups.group[group_id].arrival > 
+            (global.cfg.groups.group[group_id].ahead + 
+             global.cfg.system.ahead)) ? 
+        (global.cfg.groups.group[group_id].arrival - 
+         global.cfg.groups.group[group_id].ahead - 
+         global.cfg.system.ahead) : 0;
 }
 
 /* pause process */
@@ -44,7 +73,6 @@ void int0_process(void) interrupt 0 {
 /* pulse process */
 void int1_process(void) interrupt (2) {
     static uint8 xdata pulse = 0;
-    //uint32 high_speed_turns;
     uint8 group_id;
 
     if (global.cfg.groups.num == 0) {
@@ -54,8 +82,10 @@ void int1_process(void) interrupt (2) {
     pulse++;
     if (pulse >= global.cfg.system.pulse) {
         pulse = 0;
-        global.strand.group_turns++;
-        global.strand.group_turns_low_speed++;
+        global.strand.group_current_turns++;
+        if (global.strand.state == STRAND_STATE_RUN_LOW_SPEED) {
+            global.strand.group_current_low_speed_turns++;
+        }
     }
 
     if (global.display.page_id != DISPLAT_PAGE_ID_WORKING) {
@@ -68,23 +98,23 @@ void int1_process(void) interrupt (2) {
         case STRAND_STATE_STANDBY:
             break;
         case STRAND_STATE_RUN: {
-            if (global.strand.group_turns >= global.strand.high_speed_turns) {
+            if (global.strand.group_current_turns >= global.strand.group_expected_high_speed_turns) {
                 global.strand.state = STRAND_STATE_RUN_LOW_SPEED;
                 motor_run_low_speed(group_id);
             } 
             break;
         }
         case STRAND_STATE_RUN_LOW_SPEED: {
-            if ((global.strand.group_turns >= 
-                        global.cfg.groups.group[group_id].arrival) ||
-                    (global.strand.group_turns_low_speed >= 
-                     global.strand.low_speed_turns)) {
+            if (global.strand.group_current_low_speed_turns >= 
+                    global.strand.group_expected_low_speed_turns) {
                 global.strand.state = STRAND_STATE_BRAKING;
                 motor_braking_start();
             }                                         
             break;
         }
         case STRAND_STATE_BRAKING:
+            break;
+        case STRAND_STATE_BRAKE_DONE:
             break;
         case STRAND_STATE_PAUSE:
             break;
@@ -106,9 +136,19 @@ void strand_process(void) {
         return;
     }
 
+    if (global.input.reset) {
+        if (global.strand.group_current_turns) {
+            strand_group_init(global.strand.group_id);
+        } else {
+            if (global.strand.group_id) {
+                global.strand.group_id--;
+                strand_group_init(global.strand.group_id);
+            }
+        }
+    }
+
     group_id = global.strand.group_id;
 
-    ///TODO:reset
     switch (global.strand.state) {
         case STRAND_STATE_FINISH: 
             if (global.input.start) {
@@ -118,17 +158,26 @@ void strand_process(void) {
                     global.strand.output++;
                 }
                 group_id = global.strand.group_id;
+                strand_group_init(group_id);
             }
         case STRAND_STATE_STANDBY: 
         case STRAND_STATE_PAUSE: {
             if (global.input.start) {
-                if (global.strand.group_turns >= global.strand.high_speed_turns) {
+                if (global.strand.group_current_turns >= global.strand.group_expected_high_speed_turns) {
                     global.strand.state = STRAND_STATE_RUN;
                     motor_run(group_id);
                 } else {
                     global.strand.state = STRAND_STATE_RUN_LOW_SPEED;
                     motor_run_low_speed(group_id);
                 }
+            }
+            if (global.key.key_sub) {
+                if (global.strand.output) {
+                    global.strand.output--;
+                }
+            }
+            if (global.key.key_zero) {
+                global.strand.output = 0;
             }
             break;
         }
@@ -143,13 +192,14 @@ void strand_process(void) {
             break;
         }
         case STRAND_STATE_BRAKING: {
-            if (global.strand.brake_state == STRAND_BRAKE_STATE_TIMER_TIMEOUT) {
-                motor_braking_stop();           
-                if (global.strand.group_turns >= global.cfg.groups.group[group_id].arrival) {
-                    global.strand.state = STRAND_STATE_FINISH;
-                } else {
-                    global.strand.state = STRAND_STATE_PAUSE;
-                }
+            break;
+        }
+        case STRAND_STATE_BRAKE_DONE: {
+            motor_braking_stop();           
+            if (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival) {
+                global.strand.state = STRAND_STATE_FINISH;
+            } else {
+                global.strand.state = STRAND_STATE_PAUSE;
             }
             break;
         }
@@ -157,27 +207,6 @@ void strand_process(void) {
             global.strand.state = STRAND_STATE_STANDBY;
             break;
     }
-}
-
-void strand_group_init(uint8 group_id) {
-    if (group_id >= global.cfg.groups.num) {
-        return;
-    }
-
-    global.strand.state = STRAND_STATE_STANDBY;
-    global.strand.group_id = group_id;
-    global.strand.group_speed = 0;
-    global.strand.group_turns = 0;
-    global.strand.brake_state = STRAND_BRAKE_STATE_TIMER_STOP;
-    global.strand.group_turns_low_speed = 0;
-    global.strand.low_speed_turns = global.cfg.system.ahead + 
-        global.cfg.groups.group[group_id].ahead; 
-    global.strand.high_speed_turns = (global.cfg.groups.group[group_id].arrival > 
-            (global.cfg.groups.group[group_id].ahead + 
-             global.cfg.system.ahead)) ? 
-        (global.cfg.groups.group[group_id].arrival - 
-         global.cfg.groups.group[group_id].ahead - 
-         global.cfg.system.ahead) : 0;
 }
 
 void strand_init(void) {

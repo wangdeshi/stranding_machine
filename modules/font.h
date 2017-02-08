@@ -1,4 +1,5 @@
-﻿#ifndef __FONT_H__
+﻿
+#ifndef __FONT_H__
 #define __FONT_H__
 
 #include "type.h"
