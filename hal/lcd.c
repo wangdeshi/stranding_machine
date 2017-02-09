@@ -12,14 +12,14 @@ uint32 xdata _lcd_digit;
 
 #define get_ascii(x) (0x30 + (x))
 
-static uint8 lcd_digit_get_bit(uint8 x) {
+static uint8 lcd_digit_get_bit(uint32 digit, uint8 x) {
     uint8 i;
 
     for (i = 0; i < x; i++) {
-        _lcd_digit /= 10;
+        digit /= 10;
     }
 
-    return (_lcd_digit % 10);
+    return (digit % 10);
 }
 
 void lcd_show_digit_function(void) {
@@ -58,7 +58,7 @@ void lcd_show_digit_function(void) {
     }
 
     for (i = 0; i < show_bits; i++) {
-        lcd_data[start + i] = get_ascii(lcd_digit_get_bit(show_bits - 1 - i));
+        lcd_data[start + i] = get_ascii(lcd_digit_get_bit(_lcd_digit, show_bits - 1 - i));
     }
 
     if (_lcd_clear_enable && (_lcd_clear_bit < show_bits)) {

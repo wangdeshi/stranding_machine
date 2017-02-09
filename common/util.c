@@ -1,4 +1,5 @@
 #include "type.h"
+#include "util.h"
 
 void delay(uint8 x) {
     uint8 i;
@@ -37,40 +38,52 @@ uint8 get_digit_bits(uint32 digit) {
     return 1;
 }
 
-uint32 bound(uint32 x, uint32 min, uint32 max) {
-    if (x < min) {
-        x = min;
+uint32 xdata _util_bound_x;
+uint32 xdata _util_bound_min;
+uint32 xdata _util_bound_max;
+uint32 xdata _util_bound_add_x;
+uint32 xdata _util_bound_add_y;
+uint32 xdata _util_bound_add_min;
+uint32 xdata _util_bound_add_max;
+uint32 xdata _util_bound_sub_x;
+uint32 xdata _util_bound_sub_y;
+uint32 xdata _util_bound_sub_min;
+uint32 xdata _util_bound_sub_max;
+
+uint32 bound_function(void) {
+    if (_util_bound_x < _util_bound_min) {
+        _util_bound_x = _util_bound_min;
     }
 
-    if (x > max) {
-        x = max;
+    if (_util_bound_x > _util_bound_max) {
+        _util_bound_x = _util_bound_max;
     }
 
-    return x;
+    return _util_bound_x;
 }
 
-uint32 bound_add(uint32 x, uint32 y, uint32 min, uint32 max) {
-    if (x >= max) {
-        return max;
+uint32 bound_add_function(void) {
+    if (_util_bound_add_x >= _util_bound_add_max) {
+        return _util_bound_add_max;
     }
 
-    x += y;
+    _util_bound_add_x += _util_bound_add_y;
 
-    return bound(x, min, max);
+    return bound(_util_bound_add_x, _util_bound_add_min, _util_bound_add_max);
 }
 
-uint32 bound_sub(uint32 x, uint32 y, uint32 min, uint32 max) {
-    if (x <= min) {
-        return min;
+uint32 bound_sub_function(void) {
+    if (_util_bound_sub_x <= _util_bound_sub_min) {
+        return _util_bound_sub_min;
     }
 
-    if (x > y) {
-        x -= y;
+    if (_util_bound_sub_x > _util_bound_sub_y) {
+        _util_bound_sub_x -= _util_bound_sub_y;
     } else {
-        x = 0;
+        _util_bound_sub_x = 0;
     }
 
-    return bound(x, min, max);
+    return bound(_util_bound_sub_x, _util_bound_sub_min, _util_bound_sub_max);
 }
 
 uint32 util_pow(uint8 x, uint8 y) {

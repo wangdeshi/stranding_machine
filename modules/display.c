@@ -112,9 +112,7 @@ static void process_page_user_config(void) {
             lcd_show_digit_xbits(0x83, 2, global.cfg.groups.num, get_digit_bits(USER_CFG_MAX_GROUPS));
             lcd_show_digit_xbits(0x86, 2, group_id, get_digit_bits(USER_CFG_MAX_GROUPS));
             show_flashes_digit(0x93, 6, global.cfg.groups.group[group_id].arrival, get_digit_bits(USER_CFG_MAX_ARRIVAL), offset);
-            //show_flashes_digit(0x93, 6, 2000, get_digit_bits(USER_CFG_MAX_ARRIVAL), offset);
             lcd_show_digit_xbits(0x8b, 2, global.cfg.groups.group[group_id].speed_percentage, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
-            //lcd_show_digit_xbits(0x8b, 2, 19, get_digit_bits(USER_CFG_MAX_SPEED_PERCENTAGE));
             show_ascii_zheng_fan(global.cfg.groups.group[group_id].dir);
             lcd_show_digit_xbits(0x9d, 2, global.cfg.groups.group[group_id].ahead, get_digit_bits(USER_CFG_MAX_AHEAD));
             break;
