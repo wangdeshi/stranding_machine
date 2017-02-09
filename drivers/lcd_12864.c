@@ -88,7 +88,7 @@ void lcd12864_cgram_write(uint8 addr, uint8 * date, uint8 n) {
 }
 
 void lcd12864_gdram_write(uint8 * date) {
-	uint8 x, y, n;
+	uint8 xdata x, y, n;
 
 	lcd12864_write_command(0x34);
 	for (x = 0; x < 16; x += 8) {

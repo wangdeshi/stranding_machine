@@ -7,33 +7,31 @@
 
 static uint8 xdata last_page_id = 255;
 
-static void show_ascii_zheng_fan(uint8 dir) {
-    if (dir == CONFIG_GROUP_DIR_FORWARD) {
-        lcd12864_cgram_write(0x00, cgram_zheng, 32);
-        lcd_show_cgram(0x8f, 0, 2);
-    } else {
-        lcd12864_cgram_write(0x00, cgram_fan, 32);
-        lcd_show_cgram(0x8f, 0, 2);
-    }
-}
+#define show_ascii_zheng_fan(dir) do {                  \
+    if ((dir) == CONFIG_GROUP_DIR_FORWARD) {            \
+        lcd12864_cgram_write(0x00, cgram_zheng, 32);    \
+        lcd_show_cgram(0x8f, 0, 2);                     \
+    } else {                                            \
+        lcd12864_cgram_write(0x00, cgram_fan, 32);      \
+        lcd_show_cgram(0x8f, 0, 2);                     \
+    }                                                   \
+} while (0)
 
-static void show_flashes_ascii_zheng_fan(uint8 dir) {
-    if (global.flag.flashes) {
-        lcd_show_ascii(0x8f, ascii_space, 2);
-    } else {
-        show_ascii_zheng_fan(dir);
-    }
-}
+#define show_flashes_ascii_zheng_fan(dir) do {          \
+    if (global.flag.flashes) {                          \
+        lcd_show_ascii(0x8f, ascii_space, 2);           \
+    } else {                                            \
+        show_ascii_zheng_fan((dir));                    \
+    }                                                   \
+} while (0)
 
-static void show_flashes_digit(uint8 addr, uint8 n, uint32 digit, uint8 x, uint8 clear_bit) {
-    if (global.flag.flashes) {
-        //lcd_show_digit_clear_bit(addr, n, digit, x, clear_bit);
-        lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 1, clear_bit);
-    } else {
-        lcd_show_digit_xbits(addr, n, digit, x);
-        //lcd_show_digit(addr, n, digit, LCD_SHOW_DIGIT_ALIGN_RIGHT, x, 0, 0);
-    }
-}
+#define show_flashes_digit(addr, n, digit, x, clear_bit) do {                           \
+    if (global.flag.flashes) {                                                          \
+        lcd_show_digit_clear_bit((addr), (n), (digit), (x), (clear_bit));               \
+    } else {                                                                            \
+        lcd_show_digit_xbits((addr), (n), (digit), (x));                                \
+    }                                                                                   \
+} while (0)
 
 static void process_page_working(void) {
     if (last_page_id != global.display.page_id) {
@@ -353,7 +351,7 @@ static void process_page_system_config(void) {
 
 static void process_page_null(void) {
     if (global.display.page_id != last_page_id) {
-        lcd_clear();
+        lcd_clear;
 
         /* raw1 */
         lcd_show_ascii(0x80, gb2312_cuowuye, 6);
@@ -406,7 +404,7 @@ uint8 display_system_config_check(void) {
 }
 
 void display_init(void) {
-    lcd_init();
+    lcd_init;
     global.display.page_id = DISPLAT_PAGE_ID_WORKING;
 }
 
