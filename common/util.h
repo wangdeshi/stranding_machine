@@ -3,6 +3,7 @@
 
 #include "type.h"
 
+extern uint32 xdata _util_get_digit_bits_digit;
 extern uint32 xdata _util_bound_x;
 extern uint32 xdata _util_bound_min;
 extern uint32 xdata _util_bound_max;
@@ -19,15 +20,22 @@ void delay(uint8 x);
 
 void delay_longtime(uint8 x);
 
-uint8 get_digit_bits(uint32 digit);
+uint32 util_pow_function(uint8 y);
+
+#define util_pow(x, y)      util_pow_function((y))
+
+uint8 get_digit_bits_function(void);
+
+#define get_digit_bits(digit) (             \
+    _util_get_digit_bits_digit = (digit),   \
+    get_digit_bits_function()               \
+)
 
 uint32 bound_function(void);
 
 uint32 bound_add_function(void);
 
 uint32 bound_sub_function(void);
-
-uint32 util_pow(uint8 x, uint8 y);
 
 #define bound(x, min, max) (                    \
     _util_bound_x = (x),                        \

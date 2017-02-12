@@ -16,23 +16,25 @@ void delay_longtime(uint8 x) {
         delay(255);
 }
 
-uint8 get_digit_bits(uint32 digit) {
-    if (digit > 999999) 
+uint32 xdata _util_get_digit_bits_digit;
+
+uint8 get_digit_bits_function(void) {
+    if (_util_get_digit_bits_digit > 999999) 
         return 7;
 
-    if (digit > 99999) 
+    if (_util_get_digit_bits_digit > 99999) 
         return 6;
 
-    if (digit > 9999) 
+    if (_util_get_digit_bits_digit > 9999) 
         return 5;
 
-    if (digit > 999) 
+    if (_util_get_digit_bits_digit > 999) 
         return 4;
 
-    if (digit > 99) 
+    if (_util_get_digit_bits_digit > 99) 
         return 3;
 
-    if (digit > 9) 
+    if (_util_get_digit_bits_digit > 9) 
         return 2;
 
     return 1;
@@ -86,6 +88,29 @@ uint32 bound_sub_function(void) {
     return bound(_util_bound_sub_x, _util_bound_sub_min, _util_bound_sub_max);
 }
 
+uint32 util_pow_function(uint8 y) {
+    if (y == 0) {
+        return 1;
+    } else if (y == 1) {
+        return 10;
+    } else if (y == 2) {
+        return 100;
+    } else if (y == 3) {
+        return 1000;
+    } else if (y == 4) {
+        return 10000;
+    } else if (y == 5) {
+        return 100000;
+    } else if (y == 6) {
+        return 1000000;
+    } else if (y == 7) {
+        return 10000000;
+    } else {
+        return 100000000;
+    }
+}
+
+#if 0
 uint32 util_pow(uint8 x, uint8 y) {
     uint32 z;
 
@@ -96,4 +121,4 @@ uint32 util_pow(uint8 x, uint8 y) {
 
     return z;
 }
-
+#endif 
