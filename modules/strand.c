@@ -57,12 +57,12 @@ static void strand_group_init(uint8 group_id) {
         global.cfg.groups.group[group_id].arrival; 
     */
 
-    global.strand.group_expected_high_speed_turns = (global.cfg.groups.group[group_id].arrival > 
-            (global.cfg.groups.group[group_id].ahead + 
-             global.cfg.system.ahead)) ? 
-        (global.cfg.groups.group[group_id].arrival - 
-         global.cfg.groups.group[group_id].ahead - 
-         global.cfg.system.ahead) : 0;
+    if (global.cfg.groups.group[group_id].arrival > global.strand.group_expected_low_speed_turns) {
+        global.strand.group_expected_high_speed_turns = global.cfg.groups.group[group_id].arrival -
+            global.strand.group_expected_low_speed_turns; 
+    } else {
+        global.strand.group_expected_high_speed_turns = 0; 
+    }
 }
 
 /* pause process */
@@ -71,7 +71,7 @@ void int0_process(void) interrupt 0 {
 }
 
 /* pulse process */
-void int1_process(void) interrupt (2) {
+void int1_process(void) interrupt (2) __using (2) {
     static uint8 xdata pulse = 0;
     uint8 group_id;
 
@@ -165,21 +165,13 @@ void strand_process(void) {
         case STRAND_STATE_STANDBY: 
         case STRAND_STATE_PAUSE: {
             if (global.input.start) {
-                if (global.strand.group_current_turns >= global.strand.group_expected_high_speed_turns) {
+                if (global.strand.group_current_turns < global.strand.group_expected_high_speed_turns) {
                     global.strand.state = STRAND_STATE_RUN;
                     motor_run(group_id);
                 } else {
                     global.strand.state = STRAND_STATE_RUN_LOW_SPEED;
                     motor_run_low_speed(group_id);
                 }
-            }
-            if (global.key.key_sub) {
-                if (global.strand.output) {
-                    global.strand.output--;
-                }
-            }
-            if (global.key.key_zero) {
-                global.strand.output = 0;
             }
             break;
         }

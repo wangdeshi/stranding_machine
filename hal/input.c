@@ -13,8 +13,8 @@ void input_init(void) {
 	//IT0=1;
 
     /* Interrupt1 Config */
-	//EX1=1;
-	//IT1=1;
+	EX1=1;
+	IT1=1;
 
     /* Others Init */
     input_clear();

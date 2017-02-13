@@ -33,7 +33,7 @@ int main(void) {
     while (1) {
         if (global.flag.f10ms) {
             global.flag.f10ms = 0;
-            //strand_process();
+            strand_process();
             input_clear();
         }
 

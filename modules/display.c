@@ -67,11 +67,33 @@ static void process_page_working(void) {
     lcd_show_digit(0x9f, 2, global.strand.group_id, LCD_SHOW_DIGIT_ALIGN_LEFT, 0, 0, 0);
 
     /* key process */
-    if (global.strand.state == STRAND_STATE_STANDBY) {
-        if (global.key.key_menu) {
-            global.key.key_menu = 0;
-            global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
-        }
+    switch (global.strand.state) {
+        case STRAND_STATE_STANDBY:
+            if (global.key.key_menu) {
+                global.key.key_menu = 0;
+                global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
+            }
+        case STRAND_STATE_PAUSE:
+        case STRAND_STATE_FINISH:
+            if (global.key.key_sub) {
+                if (global.strand.output) {
+                    global.strand.output--;
+                }
+            }
+            if (global.key.key_zero) {
+                global.strand.output = 0;
+            }
+            break;
+        case STRAND_STATE_RUN:
+            break;
+        case STRAND_STATE_RUN_LOW_SPEED:
+            break;
+        case STRAND_STATE_BRAKING:
+            break;
+        case STRAND_STATE_BRAKE_DONE:
+            break;
+        default:
+            break;
     }
 }
 
