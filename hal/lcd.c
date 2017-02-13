@@ -12,11 +12,11 @@ uint32 xdata _lcd_digit;
 
 #define get_ascii(x) (0x30 + (x))
 
-uint8 xdata lcd_data[16];
-uint8 xdata bits[8];
+static uint8 xdata lcd_data[16];
+static uint8 xdata bits[8];
 
-uint32 xdata _lcd_digit_get_bit_digit;
-void lcd_digit_get_bit_function(void) {
+static uint32 xdata _lcd_digit_get_bit_digit;
+static void lcd_digit_get_bit_function(void) {
     uint8 i;
 
     for (i = 0; i < 8; i++) {
