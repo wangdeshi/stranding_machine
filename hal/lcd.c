@@ -12,49 +12,68 @@ uint32 xdata _lcd_digit;
 
 #define get_ascii(x) (0x30 + (x))
 
-uint32 xdata _lcd_digit_get_bit_digit;
+uint8 xdata lcd_data[16];
+uint8 xdata bits[8];
 
-static uint8 lcd_digit_get_bit_function1(uint8 x) {
+uint32 xdata _lcd_digit_get_bit_digit;
+void lcd_digit_get_bit_function(void) {
     uint8 i;
 
-    for (i = 0; i < x; i++) {
-        _lcd_digit_get_bit_digit /= 10.0;
+    for (i = 0; i < 8; i++) {
+        bits[i] = 0;
     }
 
-    return (_lcd_digit_get_bit_digit % 10);
-}
-
-static uint8 lcd_digit_get_bit_function(uint8 x) {
-    uint32 m, n;
-
-    if (x == 0) {
-        m = 1;
-    } else if (x == 1) {
-        m = 10;
-    } else if (x == 2) {
-        m = 100;
-    } else if (x == 3) {
-        m = 1000;
-    } else if (x == 4) {
-        m = 10000;
-    } else if (x == 5) {
-        m = 100000;
-    } else {
-        m = 1000000;
+    while (_lcd_digit_get_bit_digit >= 100000000) {
+        _lcd_digit_get_bit_digit -= 100000000;
     }
-
-    n = _lcd_digit_get_bit_digit / m;
-
-    return (uint8)(n % 10);
+    
+    while (_lcd_digit_get_bit_digit >= 10000000) {
+        _lcd_digit_get_bit_digit -= 10000000;
+        bits[7]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 1000000) {
+        _lcd_digit_get_bit_digit -= 1000000;
+        bits[6]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 100000) {
+        _lcd_digit_get_bit_digit -= 100000;
+        bits[5]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 10000) {
+        _lcd_digit_get_bit_digit -= 10000;
+        bits[4]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 1000) {
+        _lcd_digit_get_bit_digit -= 1000;
+        bits[3]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 100) {
+        _lcd_digit_get_bit_digit -= 100;
+        bits[2]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 10) {
+        _lcd_digit_get_bit_digit -= 10;
+        bits[1]++;
+    }
+    
+    while (_lcd_digit_get_bit_digit >= 1) {
+        _lcd_digit_get_bit_digit -= 1;
+        bits[0]++;
+    }
 }
 
-#define lcd_digit_get_bit(digit, x) (       \
+#define lcd_digit_get_bit(digit) (       \
     _lcd_digit_get_bit_digit = (digit),     \
-    lcd_digit_get_bit_function((x))         \
+    lcd_digit_get_bit_function()         \
 )
 
 void lcd_show_digit_function(void) {
-    uint8 xdata lcd_data[16];
     uint8 xdata digit_bits;
     uint8 xdata show_bits;
     uint8 xdata start;
@@ -88,9 +107,9 @@ void lcd_show_digit_function(void) {
         start = _lcd_n - show_bits;
     }
 
+    lcd_digit_get_bit(_lcd_digit);
     for (i = 0; i < show_bits; i++) {
-        bit_value = lcd_digit_get_bit(_lcd_digit, show_bits - 1 - i);
-        lcd_data[start + i] = get_ascii(bit_value);
+        lcd_data[start + i] = bits[show_bits - 1 - i];
     }
 
     if (_lcd_clear_enable && (_lcd_clear_bit < show_bits)) {
