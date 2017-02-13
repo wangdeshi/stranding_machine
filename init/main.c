@@ -12,6 +12,7 @@ static void flag_init(void) {
 static void init(void) {
     flag_init();
     get_config();
+    EA = 0;
     key_init();
     input_init();
     output_init();
@@ -41,7 +42,6 @@ int main(void) {
             display_process();
             key_clear();
         }
-
     }
 
     return 0;

@@ -109,7 +109,7 @@ void lcd_show_digit_function(void) {
 
     lcd_digit_get_bit(_lcd_digit);
     for (i = 0; i < show_bits; i++) {
-        lcd_data[start + i] = bits[show_bits - 1 - i];
+        lcd_data[start + i] = get_ascii(bits[show_bits - 1 - i]);
     }
 
     if (_lcd_clear_enable && (_lcd_clear_bit < show_bits)) {

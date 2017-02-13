@@ -145,15 +145,15 @@ void key_init(void) {
 	TR0 = 1;
 
     /* Others Init */
-    key_menu_last = key_menu = 0;
-    key_left_last = key_left = 0;
-    key_right_last = key_right = 0;
-    key_up_last = key_up = 0;
-    key_down_last = key_down = 0;
-    key_add_last = key_add = 0;
-    key_sub_last = key_sub = 0;
-    key_zero_last = key_zero = 0;
-    key_enter_last = key_enter = 0;
+    key_menu_last = key_menu = 1;
+    key_left_last = key_left = 1;
+    key_right_last = key_right = 1;
+    key_up_last = key_up = 1;
+    key_down_last = key_down = 1;
+    key_add_last = key_add = 1;
+    key_sub_last = key_sub = 1;
+    key_zero_last = key_zero = 1;
+    key_enter_last = key_enter = 1;
 
     global.key.key_menu = 0;
     global.key.key_left = 0;
