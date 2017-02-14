@@ -69,7 +69,7 @@ static void process_page_working(void) {
     /* key process */
     switch (global.strand.state) {
         case STRAND_STATE_STANDBY:
-            if (global.key.key_menu) {
+            if (global.key.key_menu && (global.strand.group_id == 0)) {
                 global.key.key_menu = 0;
                 global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
             }
@@ -273,6 +273,7 @@ static void process_page_user_config(void) {
     }
     if (global.key.key_enter) {
         global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+        global.strand.group_id = 0;
         set_all_group_config();
     }
 }

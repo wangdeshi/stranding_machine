@@ -11,19 +11,19 @@ static void flag_init(void) {
 
 static void init(void) {
     flag_init();
-    get_config();
-    EA = 0;
     key_init();
     input_init();
     output_init();
     display_init();
-    strand_init();
     display_power_on_logo();
     if (display_system_config_check() == 0) {
         delay_longtime(20);
     }
     //display_power_on_warning();
     //delay_longtime(20);
+    get_config();
+    EA = 0;
+    strand_init();
     EA = 1;
 }
 

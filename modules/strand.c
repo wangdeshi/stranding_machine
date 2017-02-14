@@ -47,15 +47,9 @@ static void strand_group_init(uint8 group_id) {
     
     global.strand.group_expected_low_speed_turns = global.cfg.system.ahead + 
         global.cfg.groups.group[group_id].ahead; 
-
-    /*
-    global.strand.group_expected_low_speed_turns = (global.cfg.groups.group[group_id].arrival > 
-            (global.cfg.groups.group[group_id].ahead + 
-             global.cfg.system.ahead)) ? 
-        (global.cfg.system.ahead + 
-         global.cfg.groups.group[group_id].ahead) : 
-        global.cfg.groups.group[group_id].arrival; 
-    */
+    if (global.strand.group_expected_low_speed_turns > global.cfg.groups.group[group_id].arrival) {
+        global.strand.group_expected_low_speed_turns = global.cfg.groups.group[group_id].arrival;
+    }
 
     if (global.cfg.groups.group[group_id].arrival > global.strand.group_expected_low_speed_turns) {
         global.strand.group_expected_high_speed_turns = global.cfg.groups.group[group_id].arrival -
@@ -136,19 +130,6 @@ void strand_process(void) {
         return;
     }
 
-#if 0
-    if (global.input.reset) {
-        if (global.strand.group_current_turns) {
-            strand_group_init(global.strand.group_id);
-        } else {
-            if (global.strand.group_id) {
-                global.strand.group_id--;
-                strand_group_init(global.strand.group_id);
-            }
-        }
-    }
-#endif
-
     group_id = global.strand.group_id;
 
     switch (global.strand.state) {
@@ -158,6 +139,7 @@ void strand_process(void) {
                 if (global.strand.group_id >= global.cfg.groups.num) {
                     global.strand.group_id = 0;
                     global.strand.output++;
+                    global.input.start = 0;
                 }
                 group_id = global.strand.group_id;
                 strand_group_init(group_id);
@@ -172,6 +154,17 @@ void strand_process(void) {
                     global.strand.state = STRAND_STATE_RUN_LOW_SPEED;
                     motor_run_low_speed(group_id);
                 }
+            }
+            if (global.input.reset) {
+                if (global.strand.group_current_turns) {
+                    strand_group_init(global.strand.group_id);
+                } else {
+                    if (global.strand.group_id) {
+                        global.strand.group_id--;
+                        strand_group_init(global.strand.group_id);
+                    }
+                }
+                group_id = global.strand.group_id;
             }
             break;
         }
