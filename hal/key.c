@@ -41,38 +41,38 @@ void time0_process(void) interrupt (1) __using (1) {
     count5++;
     if (count5 >= 1000) {
         count5 = 0;
-        if (global.strand.group_current_turns > group_last_turns) {
-            global.strand.group_current_speed = 
-                (global.strand.group_current_turns - group_last_turns) * 60;
-        } else {
-            global.strand.group_current_speed = 0;
-        }
-        group_last_turns = global.strand.group_current_turns;
     }
 
     count4++;
-    if (count4 >= 500) {
+    if (count4 > 500) {
         count4 = 0;
         global.flag.flashes = !global.flag.flashes;
     }
 
     if (global.strand.state == STRAND_STATE_BRAKING) {
         count3++;
-        if (count3 >= 700) {
+        if (count3 > 700) {
             count3 = 0;
             global.strand.state = STRAND_STATE_BRAKE_DONE;
         }
     }
 
     count2++;
-    if (count2 >= 50) {
+    if (count2 > 50) {
         count2 = 0;
         global.flag.f50ms = 1;
+        if (global.strand.group_current_turns > group_last_turns) {
+            global.strand.group_current_speed = 
+                (global.strand.group_current_turns - group_last_turns) * 20 * 60;
+        } else {
+            global.strand.group_current_speed = 0;
+        }
+        group_last_turns = global.strand.group_current_turns;
     }
 
     flag1 = 0;
     count1++; 
-    if (count1 >= 10) {
+    if (count1 > 10) {
         count1 = 0;
         flag1 = 1;
         global.flag.f10ms = 1;
