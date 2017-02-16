@@ -2,7 +2,7 @@
 #include "global.h"
 
 static inline void motor_run_low_speed(uint8 group_id) {
-    global.output.speed_voltage = global.cfg.system.speed_voltage;
+    global.output.speed_pwm = speed_voltage_to_pwm(global.cfg.system.speed_voltage);
     output_flush_speed();
     global.strand.group_current_low_speed_turns = 0;
 
@@ -13,7 +13,7 @@ static inline void motor_run_low_speed(uint8 group_id) {
 }
 
 static inline void motor_run(uint8 group_id) {
-    global.output.speed_voltage = speed_percentage_to_voltage(global.cfg.groups.group[group_id].speed_percentage);
+    global.output.speed_pwm = speed_percentage_to_pwm(global.cfg.groups.group[group_id].speed_percentage);
     output_flush_speed();
 
     global.output.start = 1;
@@ -34,7 +34,7 @@ static inline void motor_braking_stop(void) {
     output_flush_start_stop_dir();
 }
 
-static void strand_group_init(uint8 group_id) {
+void strand_group_init(uint8 group_id) {
     if (group_id >= global.cfg.groups.num) {
         return;
     }
@@ -134,7 +134,7 @@ void strand_process(void) {
 
     switch (global.strand.state) {
         case STRAND_STATE_FINISH: 
-            if (global.input.start) {
+            if (global.input.start || ((global.strand.group_id + 1) >= global.cfg.groups.num)) {
                 global.strand.group_id++;
                 if (global.strand.group_id >= global.cfg.groups.num) {
                     global.strand.group_id = 0;
@@ -156,14 +156,11 @@ void strand_process(void) {
                 }
             }
             if (global.input.reset) {
-                if (global.strand.group_current_turns) {
-                    strand_group_init(global.strand.group_id);
-                } else {
-                    if (global.strand.group_id) {
-                        global.strand.group_id--;
-                        strand_group_init(global.strand.group_id);
-                    }
-                }
+                strand_group_init(global.strand.group_id);
+            }
+            if (global.input.reset_double_click) {
+                global.strand.group_id = 0;
+                strand_group_init(global.strand.group_id);
                 group_id = global.strand.group_id;
             }
             break;

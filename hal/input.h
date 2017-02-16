@@ -4,6 +4,7 @@
 #include "type.h"
 
 struct INPUT {
+    uint8 reset_double_click;
     uint8 reset;
     uint8 start;
     /* interrupt0 */

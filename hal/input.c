@@ -2,6 +2,7 @@
 #include "global.h"
 
 void input_clear(void) {
+    global.input.reset_double_click = 0;
     global.input.reset = 0;
     global.input.start = 0;
     global.input.stop = 0;

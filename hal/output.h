@@ -7,13 +7,14 @@ struct OUTPUT {
     uint8 start;
     uint8 stop;
     uint8 dir;
-    uint8 speed_voltage;
+    uint8 speed_pwm;
     uint8 beer;
 };
 
 #define MAX_SPEED_PERCENTAGE    100
 
-uint8 speed_percentage_to_voltage(uint8 speed_percentage);
+uint8 speed_percentage_to_pwm(uint8 speed_percentage);
+uint8 speed_voltage_to_pwm(uint8 speed_voltage);
 void output_flush_beer(void);
 void output_flush_speed(void);
 void output_flush_start_stop_dir(void);

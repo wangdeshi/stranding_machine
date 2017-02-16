@@ -22,6 +22,8 @@ struct STRAND {
     uint32 output;
 };
 
+void strand_group_init(uint8 group_id);
+
 extern void int1_process(void) interrupt (2);
 
 void strand_process(void);

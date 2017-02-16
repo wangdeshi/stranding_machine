@@ -1,42 +1,37 @@
 #include "output.h"
 #include "global.h"
 
-uint8 speed_percentage_to_voltage(uint8 speed_percentage) {
-    uint8 speed_voltage;
-
-    if (speed_percentage < 1) {
-        speed_percentage = 1;
-    }
-    if (speed_percentage > MAX_SPEED_PERCENTAGE) {
-        speed_percentage = MAX_SPEED_PERCENTAGE;
-    }
-
-    speed_voltage = ((uint16)(speed_percentage - 1)) * (5 - 1) / (MAX_SPEED_PERCENTAGE - 1) + 1;
-
-    return speed_voltage;
-}
-
-static inline uint8 speed_voltage_to_pwm(uint8 speed_voltage) {
+static inline uint8 speed_duty_ratio_to_pwm(uint8 duty_ratio) {
     uint8 speed_pwm;
-    uint8 duty_ratio;
+    uint16 tmp;
 
-    ///FIXME:
-    //f([1V, 5V]) -> pwm[10%, 100%]
-    if (speed_voltage < 1) {
-        speed_voltage = 1;
-    }
-    if (speed_voltage > 5) {
-        speed_voltage = 5;
+    if (duty_ratio > 100) {
+        duty_ratio = 100;
     }
 
-    duty_ratio = (uint8)(((uint32)speed_voltage - 1) * (100 - 10) / (5 - 1) + 10);
-    speed_pwm = (uint8)(255 - 255 * (uint32)duty_ratio / 100);
+    tmp = duty_ratio;
+    tmp <<= 8;
+    speed_pwm = 255 - (uint8)(tmp / 100);
 
     return speed_pwm;
 }
 
-static inline uint8 speed_percentage_to_pwm(uint8 speed_percentage) {
-    return speed_voltage_to_pwm(speed_percentage_to_voltage(speed_percentage));
+uint8 speed_percentage_to_pwm(uint8 speed_percentage) {
+    return speed_duty_ratio_to_pwm(speed_percentage);
+}
+
+uint8 speed_voltage_to_pwm(uint8 speed_voltage) {
+    uint8 duty_ratio;
+
+    ///FIXME:
+    //f([0V, 5V]) -> pwm[0%, 100%], speed_voltage unit 100mV
+    if (speed_voltage > 50) {
+        speed_voltage = 50;
+    }
+
+    duty_ratio = (speed_voltage << 1);
+
+    return speed_duty_ratio_to_pwm(duty_ratio);
 }
 
 void output_flush_beer(void) {
@@ -48,7 +43,7 @@ void output_flush_beer(void) {
 }
 
 void output_flush_speed(void) {
-    CCAP0L = speed_voltage_to_pwm(global.output.speed_voltage);
+    CCAP0L = global.output.speed_pwm;
 	CCAP0H = CCAP0L;
 }
 
@@ -97,7 +92,7 @@ void output_init(void) {
     global.output.start = 0;
     global.output.stop = 0;
     global.output.dir = CONFIG_GROUP_DIR_FORWARD;
-    global.output.speed_voltage = 0;
+    global.output.speed_pwm = 0xff;
     global.output.beer = 0;
     output_flush();
     OUTPUT_SC_BACK = 0;

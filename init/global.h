@@ -13,7 +13,7 @@
 #define SYS_CFG_MIN_PULSE               1
 #define SYS_CFG_MAX_AHEAD               50
 #define SYS_CFG_MIN_AHEAD               0
-#define SYS_CFG_MAX_SPEED_VOLTAGE       3
+#define SYS_CFG_MAX_SPEED_VOLTAGE       30
 #define SYS_CFG_MIN_SPEED_VOLTAGE       1
 
 #define USER_CFG_MAX_GROUPS             30
