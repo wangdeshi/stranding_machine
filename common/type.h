@@ -54,8 +54,8 @@ __sbit __at 0xa6 SDA;
 __sbit __at 0xa7 SCL;
 
 /* OUTPUT */
-__sbit __at 0x90 OUTPUT_DIR;
-__sbit __at 0x91 OUTPUT_START;
+__sbit __at 0x90 OUTPUT_START_CLOCKWISE;
+__sbit __at 0x91 OUTPUT_START_COUNTER_CLOCKWISE;
 __sbit __at 0x92 OUTPUT_STOP;
 __sbit __at 0x94 OUTPUT_SC_BACK;
 __sbit __at 0x95 OUTPUT_BEER;

@@ -48,23 +48,26 @@ void output_flush_speed(void) {
 }
 
 void output_flush_start_stop_dir(void) {
-    if (global.output.dir == CONFIG_GROUP_DIR_FORWARD) {
-        OUTPUT_DIR = 0;
-    } else if (global.output.dir == CONFIG_GROUP_DIR_REVERSE) {
-        OUTPUT_DIR = 1;
-    } else {
-        OUTPUT_DIR = 0;
-    }
-
     if (global.output.stop) {
-        OUTPUT_START = 0;
+        OUTPUT_START_CLOCKWISE = 0;
+        OUTPUT_START_COUNTER_CLOCKWISE = 0;
         OUTPUT_STOP = 1;
     } else if (global.output.start) {
+        if (global.output.dir == CONFIG_GROUP_DIR_FORWARD) {
+            OUTPUT_START_CLOCKWISE = 1;
+            OUTPUT_START_COUNTER_CLOCKWISE = 0;
+        } else if (global.output.dir == CONFIG_GROUP_DIR_REVERSE) {
+            OUTPUT_START_CLOCKWISE = 0;
+            OUTPUT_START_COUNTER_CLOCKWISE = 1;
+        } else {
+            OUTPUT_START_CLOCKWISE = 1;
+            OUTPUT_START_COUNTER_CLOCKWISE = 0;
+        }
         OUTPUT_STOP = 0;
-        OUTPUT_START = 1;
     } else {
-        OUTPUT_START = 0;
-        OUTPUT_STOP = 1;
+        OUTPUT_START_CLOCKWISE = 0;
+        OUTPUT_START_COUNTER_CLOCKWISE = 0;
+        OUTPUT_STOP = 0;
     }
 }
 
