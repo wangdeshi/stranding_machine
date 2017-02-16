@@ -303,17 +303,17 @@ static void process_page_system_config(void) {
     /* refresh */
     switch (item) {
         case 0:
-            show_flashes_digit(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE), offset);
+            show_flashes_digit(0x93, 4, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE), offset);
             lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD));
             lcd_show_digit_xbits_point(0x9b, 4, global.cfg.system.speed_voltage, 1, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE));
             break;
         case 1:
-            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
+            lcd_show_digit_xbits(0x93, 4, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
             show_flashes_digit(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD), offset);
             lcd_show_digit_xbits_point(0x9b, 4, global.cfg.system.speed_voltage, 1, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE));
             break;
         case 2:
-            lcd_show_digit_xbits(0x94, 2, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
+            lcd_show_digit_xbits(0x93, 4, global.cfg.system.pulse, get_digit_bits(SYS_CFG_MAX_PULSE));
             lcd_show_digit_xbits(0x8c, 2, global.cfg.system.ahead, get_digit_bits(SYS_CFG_MAX_AHEAD));
             show_flashes_digit_point(0x9b, 4, global.cfg.system.speed_voltage, 1, get_digit_bits(SYS_CFG_MAX_SPEED_VOLTAGE), offset);
             break;

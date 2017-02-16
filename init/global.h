@@ -9,7 +9,7 @@
 #include "display.h"
 #include "strand.h"
 
-#define SYS_CFG_MAX_PULSE               10
+#define SYS_CFG_MAX_PULSE               100
 #define SYS_CFG_MIN_PULSE               1
 #define SYS_CFG_MAX_AHEAD               50
 #define SYS_CFG_MIN_AHEAD               0
