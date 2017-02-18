@@ -6,7 +6,7 @@
 #define MAX_GROUP_NUM       30
 
 struct CONFIG_SYSTEM {
-    uint8 speed_voltage;
+    uint8 speed_percentage;
     uint8 ahead;
     uint8 pulse;
 };
@@ -50,5 +50,7 @@ void get_config(void);
 void fill_default_system_config(void);
 
 void fill_default_group_config(uint8 group_nums);
+
+void change_group_nums(uint8 group_nums);
 
 #endif

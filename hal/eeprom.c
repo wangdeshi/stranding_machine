@@ -27,7 +27,7 @@ static void get_system_config(void) {
     cfg = &global.cfg.system;
     addr = CONFIG_ADDRESS_SYSTEM;
 
-    cfg->speed_voltage = eeprom_read(addr++);
+    cfg->speed_percentage = eeprom_read(addr++);
     cfg->ahead = eeprom_read(addr++);
     cfg->pulse = eeprom_read(addr++);
 }
@@ -92,7 +92,7 @@ void set_system_config(void) {
     cfg = &global.cfg.system;
     addr = CONFIG_ADDRESS_SYSTEM;
 
-    eeprom_write(addr++, cfg->speed_voltage);
+    eeprom_write(addr++, cfg->speed_percentage);
     eeprom_write(addr++, cfg->ahead);
     eeprom_write(addr++, cfg->pulse);
 }
@@ -128,7 +128,7 @@ void set_all_group_config(void) {
 }
 
 void fill_default_system_config(void) {
-    global.cfg.system.speed_voltage = 2;
+    global.cfg.system.speed_percentage = 20;
     global.cfg.system.ahead = 30;
     global.cfg.system.pulse = 1;
 }
@@ -152,6 +152,20 @@ void fill_default_group_config(uint8 group_nums) {
         global.cfg.groups.group[group_id].speed_percentage = 0;
         global.cfg.groups.group[group_id].ahead = 0;
         global.cfg.groups.group[group_id].arrival = 0;
+    }
+}
+
+void change_group_nums(uint8 group_nums) {
+    uint8 group_id;
+
+    global.cfg.groups.num = group_nums;
+
+    for (group_id = 0; group_id < group_nums; group_id++) {
+        global.cfg.groups.group[group_id].isconfig = 1;
+    }
+
+    for (group_id = group_nums; group_id < MAX_GROUP_NUM; group_id++) {
+        global.cfg.groups.group[group_id].isconfig = 0;
     }
 }
 

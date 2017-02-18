@@ -2,7 +2,7 @@
 #include "global.h"
 
 static inline void motor_run_low_speed(uint8 group_id) {
-    global.output.speed_pwm = speed_voltage_to_pwm(global.cfg.system.speed_voltage);
+    global.output.speed_pwm = speed_percentage_to_pwm(global.cfg.system.speed_percentage);
     output_flush_speed();
     global.strand.group_current_low_speed_turns = 0;
 
@@ -99,8 +99,8 @@ void int1_process(void) interrupt (2) __using (2) {
             break;
         }
         case STRAND_STATE_RUN_LOW_SPEED: {
-            if (global.strand.group_current_low_speed_turns >= 
-                    global.strand.group_expected_low_speed_turns) {
+            if ((global.strand.group_current_low_speed_turns >= global.strand.group_expected_low_speed_turns) || 
+                    (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival)) {
                 global.strand.state = STRAND_STATE_BRAKING;
                 motor_braking_start();
             }                                         
@@ -134,12 +134,11 @@ void strand_process(void) {
 
     switch (global.strand.state) {
         case STRAND_STATE_FINISH: 
-            if (global.input.start || ((global.strand.group_id + 1) >= global.cfg.groups.num)) {
+            if (global.input.start) {
                 global.strand.group_id++;
                 if (global.strand.group_id >= global.cfg.groups.num) {
                     global.strand.group_id = 0;
                     global.strand.output++;
-                    global.input.start = 0;
                 }
                 group_id = global.strand.group_id;
                 strand_group_init(group_id);
@@ -166,7 +165,7 @@ void strand_process(void) {
             break;
         }
         case STRAND_STATE_RUN: {
-            if (global.input.start || global.input.stop) {
+            if (global.input.stop) {
                 global.strand.state = STRAND_STATE_RUN_LOW_SPEED;
                 motor_run_low_speed(group_id);
             }

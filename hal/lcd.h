@@ -36,9 +36,13 @@ void lcd_show_cgram(uint8 addr, uint8 index, uint8 n);
 
 #define lcd_show_digit_xbits(addr, n, digit, x) lcd_show_digit((addr), (n), (digit), 0, LCD_SHOW_DIGIT_ALIGN_RIGHT, (x), 0, 0)
 
+#define lcd_show_digit_xbits_center(addr, n, digit, x) lcd_show_digit((addr), (n), (digit), 0, LCD_SHOW_DIGIT_ALIGN_CENTER, (x), 0, 0)
+
 #define lcd_show_digit_xbits_point(addr, n, digit, point, x) lcd_show_digit((addr), (n), (digit), (point), LCD_SHOW_DIGIT_ALIGN_RIGHT, (x), 0, 0)
 
 #define lcd_show_digit_clear_bit(addr, n, digit, x, clear_bit) lcd_show_digit((addr), (n), (digit), 0, LCD_SHOW_DIGIT_ALIGN_RIGHT, (x), 1, (clear_bit))
+
+#define lcd_show_digit_clear_bit_center(addr, n, digit, x, clear_bit) lcd_show_digit((addr), (n), (digit), 0, LCD_SHOW_DIGIT_ALIGN_CENTER, (x), 1, (clear_bit))
 
 #define lcd_show_digit_clear_bit_point(addr, n, digit, point, x, clear_bit) lcd_show_digit((addr), (n), (digit), (point), LCD_SHOW_DIGIT_ALIGN_RIGHT, (x), 1, (clear_bit))
 

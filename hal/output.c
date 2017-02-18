@@ -60,8 +60,8 @@ void output_flush_start_stop_dir(void) {
             OUTPUT_START_CLOCKWISE = 0;
             OUTPUT_START_COUNTER_CLOCKWISE = 1;
         } else {
-            OUTPUT_START_CLOCKWISE = 1;
-            OUTPUT_START_COUNTER_CLOCKWISE = 0;
+            OUTPUT_START_CLOCKWISE = 0;
+            OUTPUT_START_COUNTER_CLOCKWISE = 1;
         }
         OUTPUT_STOP = 0;
     } else {
