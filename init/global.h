@@ -8,6 +8,7 @@
 #include "output.h"
 #include "display.h"
 #include "strand.h"
+#include "beer.h"
 
 #define SYS_CFG_MAX_PULSE               100
 #define SYS_CFG_MIN_PULSE               1
@@ -29,6 +30,7 @@ struct GLOBAL_FLAG {
     uint8 f10ms;
     uint8 f50ms;
     uint8 flashes;
+    uint8 beer_flag;
 };
 
 struct GLOBAL {
@@ -38,6 +40,7 @@ struct GLOBAL {
     struct OUTPUT output;
     struct DISPLAY display;
     struct STRAND strand;
+    struct BEER beer;
     struct GLOBAL_FLAG flag;
 };
 
