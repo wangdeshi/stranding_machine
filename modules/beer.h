@@ -3,14 +3,6 @@
 
 #include "type.h"
 
-#define BEER_BI_MAX_NUM     10
-
-struct BEER {
-    uint8 bi[BEER_BI_MAX_NUM];
-    uint8 w_p;
-    uint8 r_p;
-};
-
 void beer_bi(void);
 
 void beer_bibi(void);

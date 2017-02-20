@@ -181,6 +181,11 @@ void strand_process(void) {
             motor_braking_stop();           
             if (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival) {
                 global.strand.state = STRAND_STATE_FINISH;
+                if ((group_id + 1) >= global.cfg.groups.num) {
+                    beer_bibi();
+                } else {
+                    beer_bi();
+                }
             } else {
                 global.strand.state = STRAND_STATE_PAUSE;
             }

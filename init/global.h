@@ -40,7 +40,6 @@ struct GLOBAL {
     struct OUTPUT output;
     struct DISPLAY display;
     struct STRAND strand;
-    struct BEER beer;
     struct GLOBAL_FLAG flag;
 };
 

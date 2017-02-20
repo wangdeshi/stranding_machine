@@ -32,11 +32,17 @@ static inline uint8 key_check(uint8 key_state, uint8 * key, uint8 * key_last) {
 
 void time0_process(void) interrupt (1) __using (1) {
     static xdata uint8 count1 = 1, count2 = 2;
-    static xdata uint16 count3 = 3, count4 = 4, count5 = 5, count6 = 6, count7 = 7;
+    static xdata uint16 count3 = 3, count4 = 4, count5 = 5, count6 = 6, count7 = 7, count8 = 8;
     static xdata uint32 group_last_turns = 0;
 
     TH0 = (uint8)((65536 - 1000) >> 8);
     TL0 = (uint8)((65536 - 1000));	
+
+    count8++;
+    if (count8 >= 150) {
+        count8 = 0;
+        global.flag.beer_flag = 1;
+    }
 
     count5++;
     if (count5 >= 300) {
