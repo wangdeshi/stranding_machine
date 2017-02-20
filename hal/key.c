@@ -77,7 +77,7 @@ void time0_process(void) interrupt (1) __using (1) {
     }
 
     count1++; 
-    if (count1 >= 10) {
+    if (count1 >= 6) {
         count1 = 0;
         global.flag.f10ms = 1;
 
