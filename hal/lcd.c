@@ -14,65 +14,6 @@ uint32 xdata _lcd_digit;
 #define get_ascii(x) (0x30 + (x))
 
 static uint8 xdata lcd_data[16];
-static uint8 xdata bits[8];
-
-static uint32 xdata _lcd_digit_get_bit_digit;
-static void lcd_digit_get_bit_function(void) {
-    uint8 i;
-
-    for (i = 0; i < 8; i++) {
-        bits[i] = 0;
-    }
-
-    while (_lcd_digit_get_bit_digit >= 100000000) {
-        _lcd_digit_get_bit_digit -= 100000000;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 10000000) {
-        _lcd_digit_get_bit_digit -= 10000000;
-        bits[7]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 1000000) {
-        _lcd_digit_get_bit_digit -= 1000000;
-        bits[6]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 100000) {
-        _lcd_digit_get_bit_digit -= 100000;
-        bits[5]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 10000) {
-        _lcd_digit_get_bit_digit -= 10000;
-        bits[4]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 1000) {
-        _lcd_digit_get_bit_digit -= 1000;
-        bits[3]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 100) {
-        _lcd_digit_get_bit_digit -= 100;
-        bits[2]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 10) {
-        _lcd_digit_get_bit_digit -= 10;
-        bits[1]++;
-    }
-    
-    while (_lcd_digit_get_bit_digit >= 1) {
-        _lcd_digit_get_bit_digit -= 1;
-        bits[0]++;
-    }
-}
-
-#define lcd_digit_get_bit(digit) (       \
-    _lcd_digit_get_bit_digit = (digit),     \
-    lcd_digit_get_bit_function()         \
-)
 
 void lcd_show_digit_function(void) {
     static uint8 xdata digit_bits;
@@ -120,14 +61,14 @@ void lcd_show_digit_function(void) {
     }
     end = start + show_n - 1;
 
-    lcd_digit_get_bit(_lcd_digit);
+    digit_get_bit(_lcd_digit);
     if (_lcd_point) {
         for (i = 0; i < _lcd_point; i++) {
-            lcd_data[end - i] = get_ascii(bits[i]);
+            lcd_data[end - i] = get_ascii(_digit_bits[i]);
         }
         lcd_data[end - _lcd_point] = 0x2e;  //ascii(.)
         for (i = _lcd_point; i < show_bits; i++) {
-            lcd_data[end - i - 1] = get_ascii(bits[i]);
+            lcd_data[end - i - 1] = get_ascii(_digit_bits[i]);
         }
         if (_lcd_clear_enable && (_lcd_clear_bit < show_bits)) {
             if (_lcd_clear_bit >= _lcd_point) {
@@ -138,7 +79,7 @@ void lcd_show_digit_function(void) {
         }
     } else {
         for (i = 0; i < show_bits; i++) {
-            lcd_data[end - i] = get_ascii(bits[i]);
+            lcd_data[end - i] = get_ascii(_digit_bits[i]);
         }
         if (_lcd_clear_enable && (_lcd_clear_bit < show_bits)) {
             lcd_data[end - _lcd_clear_bit] = 0x20;

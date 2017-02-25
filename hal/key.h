@@ -12,8 +12,11 @@ struct KEY {
     uint8 key_add;
     uint8 key_sub;
     uint8 key_zero;
+    uint8 key_zero_double_click;
     uint8 key_enter;
 };
+
+extern void key_process(void);
 
 extern void key_clear(void);
 

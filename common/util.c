@@ -40,6 +40,61 @@ uint8 get_digit_bits_function(void) {
     return 1;
 }
 
+uint8 xdata _digit_bits[8];
+uint32 xdata _digit_get_bit_digit;
+
+void digit_get_bit_function(void) {
+    uint8 i;
+
+    for (i = 0; i < 8; i++) {
+        _digit_bits[i] = 0;
+    }
+
+    while (_digit_get_bit_digit >= 100000000) {
+        _digit_get_bit_digit -= 100000000;
+    }
+    
+    while (_digit_get_bit_digit >= 10000000) {
+        _digit_get_bit_digit -= 10000000;
+        _digit_bits[7]++;
+    }
+    
+    while (_digit_get_bit_digit >= 1000000) {
+        _digit_get_bit_digit -= 1000000;
+        _digit_bits[6]++;
+    }
+    
+    while (_digit_get_bit_digit >= 100000) {
+        _digit_get_bit_digit -= 100000;
+        _digit_bits[5]++;
+    }
+    
+    while (_digit_get_bit_digit >= 10000) {
+        _digit_get_bit_digit -= 10000;
+        _digit_bits[4]++;
+    }
+    
+    while (_digit_get_bit_digit >= 1000) {
+        _digit_get_bit_digit -= 1000;
+        _digit_bits[3]++;
+    }
+    
+    while (_digit_get_bit_digit >= 100) {
+        _digit_get_bit_digit -= 100;
+        _digit_bits[2]++;
+    }
+    
+    while (_digit_get_bit_digit >= 10) {
+        _digit_get_bit_digit -= 10;
+        _digit_bits[1]++;
+    }
+    
+    while (_digit_get_bit_digit >= 1) {
+        _digit_get_bit_digit -= 1;
+        _digit_bits[0]++;
+    }
+}
+
 uint32 xdata _util_bound_x;
 uint32 xdata _util_bound_min;
 uint32 xdata _util_bound_max;
@@ -110,15 +165,47 @@ uint32 util_pow_function(uint8 y) {
     }
 }
 
-#if 0
-uint32 util_pow(uint8 x, uint8 y) {
-    uint32 z;
+uint32 _util_inc_x;
+uint32 _util_inc_min;
+uint32 _util_inc_max;
+uint8 _util_inc_offset;
 
-    z = 1;
-    while (y--) {
-        z *= x;
+uint32 inc_without_carry_function(void) {
+    digit_get_bit(_util_inc_x);
+
+    if (_util_inc_offset > 7) {
+        _util_inc_offset = 7;
+    }
+    
+    if (_digit_bits[_util_inc_offset] < 9) {
+        _util_inc_x += util_pow(10, _util_inc_offset);
+        if (_util_inc_x > _util_inc_max) {
+            _util_inc_x -= util_pow(10, _util_inc_offset);
+        }
     }
 
-    return z;
+    return _util_inc_x;
 }
-#endif 
+
+uint32 _util_dec_x;
+uint32 _util_dec_min;
+uint32 _util_dec_max;
+uint8 _util_dec_offset;
+
+uint32 dec_without_borrow_function(void) {
+    digit_get_bit(_util_dec_x);
+
+    if (_util_dec_offset > 7) {
+        _util_dec_offset = 7;
+    }
+    
+    if (_digit_bits[_util_dec_offset] > 0) {
+        _util_dec_x -= util_pow(10, _util_dec_offset);
+        if (_util_dec_x < _util_dec_min) {
+            _util_dec_x += util_pow(10, _util_dec_offset);
+        }
+    }
+
+    return _util_dec_x;
+}
+

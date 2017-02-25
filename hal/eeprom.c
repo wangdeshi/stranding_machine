@@ -76,10 +76,13 @@ void get_config(void) {
         /* default group config */
         fill_default_group_config(1);
 
+        global.strand.output = 0;
+
         /* write to eeprom */
         set_magic_config();
         set_system_config();
         set_all_group_config();
+        set_strand_output();
     }
     get_system_config();
     get_all_group_config();
@@ -167,5 +170,13 @@ void change_group_nums(uint8 group_nums) {
     for (group_id = group_nums; group_id < MAX_GROUP_NUM; group_id++) {
         global.cfg.groups.group[group_id].isconfig = 0;
     }
+}
+
+void set_strand_output(void) {
+    eeprom_write_uint32(CONFIG_ADDRESS_STRAND_OUTPUT, global.strand.output);
+}
+
+void get_strand_output(void) {
+    global.strand.output = eeprom_read_uint32(CONFIG_ADDRESS_STRAND_OUTPUT);
 }
 

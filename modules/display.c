@@ -85,19 +85,28 @@ static void process_page_working(void) {
     /* key process */
     switch (global.strand.state) {
         case STRAND_STATE_STANDBY:
-            if (global.key.key_menu && (global.strand.group_id == 0)) {
+        case STRAND_STATE_PAUSE:
+        case STRAND_STATE_FINISH:
+            if (global.key.key_menu) {
                 global.key.key_menu = 0;
                 global.display.page_id = DISPLAT_PAGE_ID_USER_CONFIG;
             }
-        case STRAND_STATE_PAUSE:
-        case STRAND_STATE_FINISH:
             if (global.key.key_sub) {
                 if (global.strand.output) {
                     global.strand.output--;
+                    set_strand_output();
                 }
             }
-            if (global.key.key_zero) {
+            if (global.key.key_down) {
                 global.strand.output = 0;
+                set_strand_output();
+            }
+            if (global.key.key_zero) {
+                strand_group_init(global.strand.group_id);
+            }
+            if (global.key.key_zero_double_click) {
+                global.strand.group_id = 0;
+                strand_group_init(global.strand.group_id);
             }
             break;
         case STRAND_STATE_RUN:
@@ -186,11 +195,11 @@ static void process_page_user_config(void) {
     switch (item) {
         case 0:
             if (global.key.key_add) {
-                global.cfg.groups.num = bound_add(global.cfg.groups.num, util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                global.cfg.groups.num = inc_without_carry(global.cfg.groups.num, offset, USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
                 change_group_nums(global.cfg.groups.num);
             }
             if (global.key.key_sub) {
-                global.cfg.groups.num = bound_sub(global.cfg.groups.num, util_pow(10, offset), USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
+                global.cfg.groups.num = dec_without_borrow(global.cfg.groups.num, offset, USER_CFG_MIN_GROUPS, USER_CFG_MAX_GROUPS);
                 change_group_nums(global.cfg.groups.num);
             }
             if (group_id >= global.cfg.groups.num) {
@@ -209,16 +218,16 @@ static void process_page_user_config(void) {
             break;
         case 2:
             if (global.key.key_add) {
-                global.cfg.groups.group[group_id].arrival = bound_add(
+                global.cfg.groups.group[group_id].arrival = inc_without_carry(
                         global.cfg.groups.group[group_id].arrival, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_ARRIVAL, 
                         USER_CFG_MAX_ARRIVAL);
             }
             if (global.key.key_sub) {
-                global.cfg.groups.group[group_id].arrival = bound_sub(
+                global.cfg.groups.group[group_id].arrival = dec_without_borrow(
                         global.cfg.groups.group[group_id].arrival, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_ARRIVAL, 
                         USER_CFG_MAX_ARRIVAL);
             }
@@ -226,16 +235,16 @@ static void process_page_user_config(void) {
             break;
         case 3:
             if (global.key.key_add) {
-                global.cfg.groups.group[group_id].speed_percentage = bound_add(
+                global.cfg.groups.group[group_id].speed_percentage = inc_without_carry(
                         global.cfg.groups.group[group_id].speed_percentage, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_SPEED_PERCENTAGE, 
                         USER_CFG_MAX_SPEED_PERCENTAGE);
             }
             if (global.key.key_sub) {
-                global.cfg.groups.group[group_id].speed_percentage = bound_sub(
+                global.cfg.groups.group[group_id].speed_percentage = dec_without_borrow(
                         global.cfg.groups.group[group_id].speed_percentage, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_SPEED_PERCENTAGE, 
                         USER_CFG_MAX_SPEED_PERCENTAGE);
             }
@@ -252,16 +261,16 @@ static void process_page_user_config(void) {
             break;
         case 5:
             if (global.key.key_add) {
-                global.cfg.groups.group[group_id].ahead = bound_add(
+                global.cfg.groups.group[group_id].ahead = inc_without_carry(
                         global.cfg.groups.group[group_id].ahead, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_AHEAD, 
                         USER_CFG_MAX_AHEAD);
             }
             if (global.key.key_sub) {
-                global.cfg.groups.group[group_id].ahead = bound_sub(
+                global.cfg.groups.group[group_id].ahead = dec_without_borrow(
                         global.cfg.groups.group[group_id].ahead, 
-                        util_pow(10, offset), 
+                        offset, 
                         USER_CFG_MIN_AHEAD, 
                         USER_CFG_MAX_AHEAD);
             }
@@ -380,28 +389,28 @@ static void process_page_system_config(void) {
     switch (item) {
         case 0:
             if (global.key.key_add) {
-                global.cfg.system.pulse = bound_add(global.cfg.system.pulse, util_pow(10, offset), SYS_CFG_MIN_PULSE, SYS_CFG_MAX_PULSE);
+                global.cfg.system.pulse = inc_without_carry(global.cfg.system.pulse, offset, SYS_CFG_MIN_PULSE, SYS_CFG_MAX_PULSE);
             }
             if (global.key.key_sub) {
-                global.cfg.system.pulse = bound_sub(global.cfg.system.pulse, util_pow(10, offset), SYS_CFG_MIN_PULSE, SYS_CFG_MAX_PULSE);
+                global.cfg.system.pulse = dec_without_borrow(global.cfg.system.pulse, offset, SYS_CFG_MIN_PULSE, SYS_CFG_MAX_PULSE);
             }
             digit_bits = get_digit_bits(SYS_CFG_MAX_PULSE);
             break;
         case 1:
             if (global.key.key_add) {
-                global.cfg.system.ahead = bound_add(global.cfg.system.ahead, util_pow(10, offset), SYS_CFG_MIN_AHEAD, SYS_CFG_MAX_AHEAD);
+                global.cfg.system.ahead = inc_without_carry(global.cfg.system.ahead, offset, SYS_CFG_MIN_AHEAD, SYS_CFG_MAX_AHEAD);
             }
             if (global.key.key_sub) {
-                global.cfg.system.ahead = bound_sub(global.cfg.system.ahead, util_pow(10, offset), SYS_CFG_MIN_AHEAD, SYS_CFG_MAX_AHEAD);
+                global.cfg.system.ahead = dec_without_borrow(global.cfg.system.ahead, offset, SYS_CFG_MIN_AHEAD, SYS_CFG_MAX_AHEAD);
             }
             digit_bits = get_digit_bits(SYS_CFG_MAX_AHEAD);
             break;
         case 2:
             if (global.key.key_add) {
-                global.cfg.system.speed_percentage = bound_add(global.cfg.system.speed_percentage, util_pow(10, offset), SYS_CFG_MIN_SPEED_PERCENTAGE, SYS_CFG_MAX_SPEED_PERCENTAGE);
+                global.cfg.system.speed_percentage = inc_without_carry(global.cfg.system.speed_percentage, offset, SYS_CFG_MIN_SPEED_PERCENTAGE, SYS_CFG_MAX_SPEED_PERCENTAGE);
             }
             if (global.key.key_sub) {
-                global.cfg.system.speed_percentage = bound_sub(global.cfg.system.speed_percentage, util_pow(10, offset), SYS_CFG_MIN_SPEED_PERCENTAGE, SYS_CFG_MAX_SPEED_PERCENTAGE);
+                global.cfg.system.speed_percentage = dec_without_borrow(global.cfg.system.speed_percentage, offset, SYS_CFG_MIN_SPEED_PERCENTAGE, SYS_CFG_MAX_SPEED_PERCENTAGE);
             }
             digit_bits = get_digit_bits(SYS_CFG_MAX_SPEED_PERCENTAGE);
             break;

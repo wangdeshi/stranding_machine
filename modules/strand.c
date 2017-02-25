@@ -45,8 +45,8 @@ void strand_group_init(uint8 group_id) {
     global.strand.group_current_turns = 0;
     global.strand.group_current_low_speed_turns = 0;
     
-    global.strand.group_expected_low_speed_turns = global.cfg.system.ahead + 
-        global.cfg.groups.group[group_id].ahead; 
+    global.strand.group_expected_low_speed_turns = global.cfg.system.ahead; 
+    global.strand.group_expected_low_speed_turns += global.cfg.groups.group[group_id].ahead; 
     if (global.strand.group_expected_low_speed_turns > global.cfg.groups.group[group_id].arrival) {
         global.strand.group_expected_low_speed_turns = global.cfg.groups.group[group_id].arrival;
     }
@@ -139,6 +139,7 @@ void strand_process(void) {
                 if (global.strand.group_id >= global.cfg.groups.num) {
                     global.strand.group_id = 0;
                     global.strand.output++;
+                    set_strand_output();
                 }
                 group_id = global.strand.group_id;
                 strand_group_init(group_id);
@@ -181,11 +182,6 @@ void strand_process(void) {
             motor_braking_stop();           
             if (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival) {
                 global.strand.state = STRAND_STATE_FINISH;
-                if ((group_id + 1) >= global.cfg.groups.num) {
-                    beer_bibi();
-                } else {
-                    beer_bi();
-                }
             } else {
                 global.strand.state = STRAND_STATE_PAUSE;
             }
@@ -198,8 +194,8 @@ void strand_process(void) {
 }
 
 void strand_init(void) {
-    global.strand.output = 0;
-    
+    get_strand_output();   
+
     if (global.cfg.groups.num) {
         strand_group_init(0);
     }

@@ -35,11 +35,14 @@ struct CONFIG {
 #define CONFIG_SIZE_SYSTEM          0x10
 #define CONFIG_SIZE_GROUPS_NUM      0x01
 #define CONFIG_SIZE_ONE_GROUP       0x07
+#define CONFIG_SIZE_STRAND_OUTPUT   0x04
 
-#define CONFIG_ADDRESS_MAGIC        0
-#define CONFIG_ADDRESS_SYSTEM       (CONFIG_ADDRESS_MAGIC + CONFIG_SIZE_MAGIC)
-#define CONFIG_ADDRESS_GROUPS_NUM   (CONFIG_ADDRESS_SYSTEM + CONFIG_SIZE_SYSTEM)
-#define CONFIG_ADDRESS_GROUP_BEGIN  (CONFIG_ADDRESS_GROUPS_NUM + CONFIG_SIZE_GROUPS_NUM)
+#define CONFIG_ADDRESS_MAGIC            0
+#define CONFIG_ADDRESS_SYSTEM           (CONFIG_ADDRESS_MAGIC + CONFIG_SIZE_MAGIC)
+#define CONFIG_ADDRESS_GROUPS_NUM       (CONFIG_ADDRESS_SYSTEM + CONFIG_SIZE_SYSTEM)
+#define CONFIG_ADDRESS_GROUP_BEGIN      (CONFIG_ADDRESS_GROUPS_NUM + CONFIG_SIZE_GROUPS_NUM)
+#define CONFIG_ADDRESS_GROUP_END        (CONFIG_ADDRESS_GROUP_BEGIN + (CONFIG_SIZE_ONE_GROUP * MAX_GROUP_NUM))
+#define CONFIG_ADDRESS_STRAND_OUTPUT    (CONFIG_ADDRESS_GROUP_END)
 
 void set_system_config(void);
 
@@ -52,5 +55,9 @@ void fill_default_system_config(void);
 void fill_default_group_config(uint8 group_nums);
 
 void change_group_nums(uint8 group_nums);
+
+void set_strand_output(void);
+
+void get_strand_output(void);
 
 #endif
