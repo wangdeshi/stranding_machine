@@ -42,6 +42,8 @@ uint8 get_digit_bits_function(void);
     get_digit_bits_function()               \
 )
 
+void digit_get_bit_function(void);
+
 #define digit_get_bit(digit) (       \
     _digit_get_bit_digit = (digit),     \
     digit_get_bit_function()         \

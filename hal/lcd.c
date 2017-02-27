@@ -19,7 +19,7 @@ void lcd_show_digit_function(void) {
     static uint8 xdata digit_bits;
     static uint8 xdata show_bits, show_n;
     static uint8 xdata start, end;
-    uint8 i, bit_value;
+    uint8 i;
 
     if (_lcd_n > 16) {
         _lcd_n = 16;
