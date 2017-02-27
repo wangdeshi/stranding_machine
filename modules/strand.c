@@ -1,38 +1,36 @@
 #include "strand.h"
 #include "global.h"
 
-static inline void motor_run_low_speed(uint8 group_id) {
-    global.output.speed_pwm = speed_percentage_to_pwm(global.cfg.system.speed_percentage);
-    output_flush_speed();
-    global.strand.group_current_low_speed_turns = 0;
+#define motor_run_low_speed(group_id) do {                  \
+    global.output.speed_pwm = global.strand.low_speed_pwm;  \
+    output_flush_speed;                                     \
+    global.strand.group_current_low_speed_turns = 0;        \
+    global.output.start = 1;                                \
+    global.output.stop = 0;                                 \
+    global.output.dir = global.cfg.groups.group[group_id].dir;  \
+    output_flush_start_stop_dir;                            \
+} while (0)
 
-    global.output.start = 1;
-    global.output.stop = 0;
-    global.output.dir = global.cfg.groups.group[group_id].dir;
-    output_flush_start_stop_dir();
-}
+#define motor_run(group_id) do {                                \
+    global.output.speed_pwm = global.strand.high_speed_pwm;     \
+    output_flush_speed;                                         \
+    global.output.start = 1;                                    \
+    global.output.stop = 0;                                     \
+    global.output.dir = global.cfg.groups.group[group_id].dir;  \
+    output_flush_start_stop_dir;                                \
+} while (0)
 
-static inline void motor_run(uint8 group_id) {
-    global.output.speed_pwm = speed_percentage_to_pwm(global.cfg.groups.group[group_id].speed_percentage);
-    output_flush_speed();
+#define motor_braking_start do {        \
+    global.output.start = 0;            \
+    global.output.stop = 1;             \
+    output_flush_start_stop_dir;        \
+} while (0)
 
-    global.output.start = 1;
-    global.output.stop = 0;
-    global.output.dir = global.cfg.groups.group[group_id].dir;
-    output_flush_start_stop_dir();
-}
-
-static inline void motor_braking_start(void) {
-    global.output.start = 0;
-    global.output.stop = 1;
-    output_flush_start_stop_dir();
-}
-
-static inline void motor_braking_stop(void) {
-    global.output.start = 0;
-    global.output.stop = 0;
-    output_flush_start_stop_dir();
-}
+#define motor_braking_stop do {         \
+    global.output.start = 0;            \
+    global.output.stop = 0;             \
+    output_flush_start_stop_dir;        \
+} while (0)
 
 void strand_group_init(uint8 group_id) {
     if (group_id >= global.cfg.groups.num) {
@@ -57,6 +55,9 @@ void strand_group_init(uint8 group_id) {
     } else {
         global.strand.group_expected_high_speed_turns = 0; 
     }
+
+    global.strand.high_speed_pwm = speed_percentage_to_pwm(global.cfg.groups.group[group_id].speed_percentage);
+    global.strand.low_speed_pwm = speed_percentage_to_pwm(global.cfg.system.speed_percentage);
 }
 
 /* pause process */
@@ -65,7 +66,7 @@ void int0_process(void) interrupt 0 {
 }
 
 /* pulse process */
-void int1_process(void) interrupt (2) __using (2) {
+void int1_process(void) interrupt 2 using 2 {
     static uint8 xdata pulse = 0;
     uint8 group_id;
 
@@ -102,7 +103,7 @@ void int1_process(void) interrupt (2) __using (2) {
             if ((global.strand.group_current_low_speed_turns >= global.strand.group_expected_low_speed_turns) || 
                     (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival)) {
                 global.strand.state = STRAND_STATE_BRAKING;
-                motor_braking_start();
+                motor_braking_start;
             }                                         
             break;
         }
@@ -179,7 +180,7 @@ void strand_process(void) {
             break;
         }
         case STRAND_STATE_BRAKE_DONE: {
-            motor_braking_stop();           
+            motor_braking_stop;           
             if (global.strand.group_current_turns >= global.cfg.groups.group[group_id].arrival) {
                 global.strand.state = STRAND_STATE_FINISH;
             } else {

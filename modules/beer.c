@@ -5,12 +5,12 @@ static uint8 bi_count;
 
 #define do_beer_sound do {      \
     global.output.beer = 1;     \
-    output_flush_beer();        \
+    output_flush_beer;        \
 } while (0)
 
 #define do_beer_stillness do {  \
     global.output.beer = 0;     \
-    output_flush_beer();        \
+    output_flush_beer;        \
 } while (0)
 
 static void beer_stillness(void) {

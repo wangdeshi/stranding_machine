@@ -2,24 +2,24 @@
 #include "global.h"
 #include "util.h"
 
-volatile static uint8 xdata key_menu_last, key_menu;
-volatile static uint8 xdata key_left_last, key_left;
-volatile static uint8 xdata key_right_last, key_right;
-volatile static uint8 xdata key_up_last, key_up;
-volatile static uint8 xdata key_down_last, key_down;
-volatile static uint8 xdata key_add_last, key_add;
-volatile static uint8 xdata key_sub_last, key_sub;
-volatile static uint8 xdata key_zero_last, key_zero;
-volatile static uint8 xdata key_enter_last, key_enter;
+static uint8 xdata key_menu_last, key_menu;
+static uint8 xdata key_left_last, key_left;
+static uint8 xdata key_right_last, key_right;
+static uint8 xdata key_up_last, key_up;
+static uint8 xdata key_down_last, key_down;
+static uint8 xdata key_add_last, key_add;
+static uint8 xdata key_sub_last, key_sub;
+static uint8 xdata key_zero_last, key_zero;
+static uint8 xdata key_enter_last, key_enter;
 
-volatile static uint8 xdata key_zero_first, key_zero_second;
-volatile static uint16 xdata key_zero_count = 9;
+static uint8 xdata key_zero_first, key_zero_second;
+static uint16 xdata key_zero_count = 9;
 
-volatile static uint8 xdata input_reset_first, input_reset_second;
-volatile static uint16 xdata input_reset_count = 7;
-volatile static uint8 xdata input_reset_last, input_reset;
-volatile static uint8 xdata input_start_last, input_start;
-volatile static uint8 xdata input_stop_last, input_stop;
+static uint8 xdata input_reset_first, input_reset_second;
+static uint16 xdata input_reset_count = 7;
+static uint8 xdata input_reset_last, input_reset;
+static uint8 xdata input_start_last, input_start;
+static uint8 xdata input_stop_last, input_stop;
 
 #define key_check(key_state, key, key_last) (                                                  \
     (key) = (key_state),                                                                            \
@@ -32,9 +32,9 @@ volatile static uint8 xdata input_stop_last, input_stop;
 )
 
 
-void time0_process(void) interrupt (1) __using (1) {
+void time0_process(void) interrupt 1 using 1 {
     static xdata uint8 count1 = 1, count2 = 2;
-    static xdata uint16 count3 = 3, count4 = 4, count5 = 5, count6 = 6, count7 = 7, count8 = 8;
+    static xdata uint16 count3 = 3, count4 = 4, count5 = 5, count8 = 8;
     static xdata uint32 group_last_turns = 0;
 
     TH0 = (uint8)((65536 - 1000) >> 8);

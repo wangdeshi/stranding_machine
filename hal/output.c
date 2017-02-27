@@ -42,49 +42,6 @@ uint8 speed_voltage_to_pwm(uint8 speed_voltage) {
     return speed_duty_ratio_to_pwm(duty_ratio);
 }
 
-void output_flush_beer(void) {
-    if (global.output.beer) {
-        OUTPUT_BEER = 1;
-    } else {
-        OUTPUT_BEER = 0;
-    }
-}
-
-void output_flush_speed(void) {
-    CCAP0L = global.output.speed_pwm;
-	CCAP0H = CCAP0L;
-}
-
-void output_flush_start_stop_dir(void) {
-    if (global.output.stop) {
-        OUTPUT_START_CLOCKWISE = 0;
-        OUTPUT_START_COUNTER_CLOCKWISE = 0;
-        OUTPUT_STOP = 1;
-    } else if (global.output.start) {
-        if (global.output.dir == CONFIG_GROUP_DIR_FORWARD) {
-            OUTPUT_START_CLOCKWISE = 1;
-            OUTPUT_START_COUNTER_CLOCKWISE = 0;
-        } else if (global.output.dir == CONFIG_GROUP_DIR_REVERSE) {
-            OUTPUT_START_CLOCKWISE = 0;
-            OUTPUT_START_COUNTER_CLOCKWISE = 1;
-        } else {
-            OUTPUT_START_CLOCKWISE = 0;
-            OUTPUT_START_COUNTER_CLOCKWISE = 1;
-        }
-        OUTPUT_STOP = 0;
-    } else {
-        OUTPUT_START_CLOCKWISE = 0;
-        OUTPUT_START_COUNTER_CLOCKWISE = 0;
-        OUTPUT_STOP = 0;
-    }
-}
-
-void output_flush(void) {
-    output_flush_beer();
-    output_flush_speed();
-    output_flush_start_stop_dir();
-}
-
 void output_init(void) {
     /* IO Config */
 	P1M1 = 0;
@@ -105,7 +62,7 @@ void output_init(void) {
     global.output.dir = CONFIG_GROUP_DIR_FORWARD;
     global.output.speed_pwm = 0xff;
     global.output.beer = 0;
-    output_flush();
+    output_flush;
     OUTPUT_SC_BACK = 0;
 
     /* Start PWM */

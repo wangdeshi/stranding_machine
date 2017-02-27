@@ -20,11 +20,15 @@ struct STRAND {
     uint32 group_expected_low_speed_turns;
     uint32 group_expected_high_speed_turns;
     uint32 output;
+    uint8 high_speed_pwm;
+    uint8 low_speed_pwm;
 };
 
 void strand_group_init(uint8 group_id);
 
-extern void int1_process(void) interrupt (2);
+#ifdef __SDCC__
+extern void int1_process(void) interrupt 2 using 2;
+#endif
 
 void strand_process(void);
 

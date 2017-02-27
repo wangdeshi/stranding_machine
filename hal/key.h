@@ -22,6 +22,8 @@ extern void key_clear(void);
 
 extern void key_init(void);
 
-extern void time0_process(void) interrupt (1) __using (1);
+#ifdef __SDCC__
+extern void time0_process(void) interrupt 1 using 1;
+#endif
 
 #endif

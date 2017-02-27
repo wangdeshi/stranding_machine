@@ -16,11 +16,12 @@ typedef signed long         int32;
 typedef unsigned long       uint32;
 
 #ifdef __SDCC__
-#include<8052.h> 
+#include <8052.h> 
 
 #define xdata __xdata
 #define code __code
 #define interrupt __interrupt
+#define using __using
 
 /* SFR */
 __sfr __at 0x91 P1M1;
@@ -73,7 +74,7 @@ __sbit __at 0xa2 K3;
 __sbit __at 0xa1 K4;
 __sbit __at 0xa0 K5;
 #else
-#include<reg52.h> 
+#include <reg52.h> 
 /* SFR */
 sfr P1M1 = 0x91;
 sfr P1M0 = 0x92;
@@ -88,6 +89,10 @@ sfr CCAP0L = 0xea;
 sfr CCAP0H = 0xfa;
 sfr CCAPM0 = 0xda;
 sfr PCAPWM0 = 0xf2;
+//sfr P0 = 0x80;
+//sfr P1 = 0x90;
+//sfr P2 = 0xa0;
+//sfr P3 = 0xb0;
 
 /* LCD12864 */
 sbit RS = P3^0;
@@ -100,8 +105,8 @@ sbit SDA = P2^6;
 sbit SCL = P2^7;
 
 /* OUTPUT */
-sbit OUTPUT_DIR = P1^0;
-sbit OUTPUT_START = P1^1;
+sbit OUTPUT_START_CLOCKWISE = P1^0;
+sbit OUTPUT_START_COUNTER_CLOCKWISE = P1^1;
 sbit OUTPUT_STOP = P1^2;
 sbit OUTPUT_SC_BACK = P1^4;
 sbit OUTPUT_BEER = P1^5;

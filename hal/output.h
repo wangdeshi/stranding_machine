@@ -15,10 +15,50 @@ struct OUTPUT {
 
 uint8 speed_percentage_to_pwm(uint8 speed_percentage);
 uint8 speed_voltage_to_pwm(uint8 speed_voltage);
-void output_flush_beer(void);
-void output_flush_speed(void);
-void output_flush_start_stop_dir(void);
-void output_flush(void);
+
+#define output_flush_beer do {  \
+    if (global.output.beer) {   \
+        OUTPUT_BEER = 1;        \
+    } else {                    \
+        OUTPUT_BEER = 0;        \
+    }                           \
+} while (0)
+
+#define output_flush_speed do {             \
+    CCAP0L = global.output.speed_pwm;       \
+	CCAP0H = CCAP0L;                        \
+} while (0)
+
+#define output_flush_start_stop_dir do {                                \
+    if (global.output.stop) {                                           \
+        OUTPUT_START_CLOCKWISE = 0;                                     \
+        OUTPUT_START_COUNTER_CLOCKWISE = 0;                             \
+        OUTPUT_STOP = 1;                                                \
+    } else if (global.output.start) {                                   \
+        if (global.output.dir == CONFIG_GROUP_DIR_FORWARD) {            \
+            OUTPUT_START_CLOCKWISE = 1;                                 \
+            OUTPUT_START_COUNTER_CLOCKWISE = 0;                         \
+        } else if (global.output.dir == CONFIG_GROUP_DIR_REVERSE) {     \
+            OUTPUT_START_CLOCKWISE = 0;                                 \
+            OUTPUT_START_COUNTER_CLOCKWISE = 1;                         \
+        } else {                                                        \
+            OUTPUT_START_CLOCKWISE = 0;                                 \
+            OUTPUT_START_COUNTER_CLOCKWISE = 1;                         \
+        }                                                               \
+        OUTPUT_STOP = 0;                                                \
+    } else {                                                            \
+        OUTPUT_START_CLOCKWISE = 0;                                     \
+        OUTPUT_START_COUNTER_CLOCKWISE = 0;                             \
+        OUTPUT_STOP = 0;                                                \
+    }                                                                   \
+} while (0)
+
+#define output_flush do {           \
+    output_flush_beer;              \
+    output_flush_speed;             \
+    output_flush_start_stop_dir;    \
+} while (0)
+
 void output_init(void);
 
 #endif 
