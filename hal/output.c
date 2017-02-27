@@ -4,6 +4,7 @@
 static inline uint8 speed_duty_ratio_to_pwm(uint8 duty_ratio) {
     uint8 speed_pwm;
     uint16 tmp;
+    uint8 quotient;
 
     if (duty_ratio > 100) {
         duty_ratio = 100;
@@ -11,7 +12,14 @@ static inline uint8 speed_duty_ratio_to_pwm(uint8 duty_ratio) {
 
     tmp = duty_ratio;
     tmp <<= 8;
-    speed_pwm = 255 - (uint8)(tmp / 100);
+
+    quotient = 0;
+    while (tmp >= 100) {
+        tmp -= 100;
+        quotient++;
+    }
+
+    speed_pwm = 255 - quotient;
 
     return speed_pwm;
 }
