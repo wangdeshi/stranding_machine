@@ -6,6 +6,5 @@ tags
 *.swp
 /project/keil/*.LST
 /project/keil/*.lst
-/project/keil/out/*
 /project/keil/*.m51
 /project/keil/*.bak
