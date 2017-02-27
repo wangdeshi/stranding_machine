@@ -34,17 +34,11 @@ static uint8 xdata input_stop_last, input_stop;
 
 void time0_process(void) interrupt 1 using 1 {
     static xdata uint8 count1 = 1, count2 = 2;
-    static xdata uint16 count3 = 3, count4 = 4, count5 = 5, count8 = 8;
+    static xdata uint16 count3 = 3, count4 = 4, count5 = 5;
     static xdata uint32 group_last_turns = 0;
 
     TH0 = (uint8)((65536 - 1000) >> 8);
     TL0 = (uint8)((65536 - 1000));	
-
-    count8++;
-    if (count8 >= 150) {
-        count8 = 0;
-        global.flag.beer_flag = 1;
-    }
 
     count5++;
     if (count5 >= 300) {

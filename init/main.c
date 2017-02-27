@@ -14,7 +14,6 @@ static void init(void) {
     key_init();
     input_init();
     output_init();
-    //beer_init();
     display_init();
     display_power_on_logo();
     if (display_system_config_check() == 0) {
@@ -38,7 +37,6 @@ int main(void) {
             strand_process();
             input_clear();
         }
-        //beer_process();
         if (global.flag.f50ms) {
             global.flag.f50ms = 0;
             display_process();

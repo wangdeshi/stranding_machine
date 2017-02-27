@@ -462,16 +462,6 @@
           <GroupName>modules</GroupName>
           <Files>
             <File>
-              <FileName>beer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\modules\beer.c</FilePath>
-            </File>
-            <File>
-              <FileName>beer.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\modules\beer.h</FilePath>
-            </File>
-            <File>
               <FileName>display.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\modules\display.c</FilePath>
