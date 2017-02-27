@@ -66,7 +66,6 @@ static void get_all_group_config(void) {
 
 void get_config(void) {
     uint32 magic;
-    uint8 group_id;
 
     magic = get_magic_config();
     if (magic != config_magic) {
