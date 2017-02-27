@@ -4,3 +4,8 @@ tags
 /project/linux/strand.bin
 /project/linux/main.lnk
 *.swp
+/project/keil/*.LST
+/project/keil/*.lst
+/project/keil/out/*
+/project/keil/*.m51
+/project/keil/*.bak
