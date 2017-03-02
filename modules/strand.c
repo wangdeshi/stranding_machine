@@ -20,20 +20,20 @@
     output_flush_start_stop_dir;                                \
 } while (0)
 
-#define motor_braking_start do {        \
-    global.output.speed_pwm = 255;      \
-    output_flush_speed;                 \
-    global.output.start = 0;            \
-    global.output.stop = 1;             \
-    output_flush_start_stop_dir;        \
+#define motor_braking_start do {                \
+    global.output.speed_pwm = IDLE_SPEED_PWM;   \
+    output_flush_speed;                         \
+    global.output.start = 0;                    \
+    global.output.stop = 1;                     \
+    output_flush_start_stop_dir;                \
 } while (0)
 
-#define motor_braking_stop do {         \
-    global.output.speed_pwm = 255;      \
-    output_flush_speed;                 \
-    global.output.start = 0;            \
-    global.output.stop = 0;             \
-    output_flush_start_stop_dir;        \
+#define motor_braking_stop do {                 \
+    global.output.speed_pwm = IDLE_SPEED_PWM;   \
+    output_flush_speed;                         \
+    global.output.start = 0;                    \
+    global.output.stop = 0;                     \
+    output_flush_start_stop_dir;                \
 } while (0)
 
 void strand_group_init(uint8 group_id) {

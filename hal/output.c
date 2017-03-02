@@ -53,14 +53,14 @@ void output_init(void) {
 	CCAPM0 = 0x42;
 	CL = 0;
 	CH = 0;
-	CCAP0H = 0;
-    CCAP0L = 0;
+	CCAP0H = IDLE_SPEED_PWM;
+    CCAP0L = IDLE_SPEED_PWM;
 
     /* Others Init */
     global.output.start = 0;
     global.output.stop = 0;
     global.output.dir = CONFIG_GROUP_DIR_FORWARD;
-    global.output.speed_pwm = 0xff;
+    global.output.speed_pwm = IDLE_SPEED_PWM;
     global.output.beer = 0;
     output_flush;
     OUTPUT_SC_BACK = 0;

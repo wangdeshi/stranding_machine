@@ -12,6 +12,7 @@ struct OUTPUT {
 };
 
 #define MAX_SPEED_PERCENTAGE    100
+#define IDLE_SPEED_PWM          0xff
 
 uint8 speed_percentage_to_pwm(uint8 speed_percentage);
 uint8 speed_voltage_to_pwm(uint8 speed_voltage);
@@ -33,6 +34,7 @@ uint8 speed_voltage_to_pwm(uint8 speed_voltage);
     if (global.output.stop) {                                           \
         OUTPUT_START_CLOCKWISE = 0;                                     \
         OUTPUT_START_COUNTER_CLOCKWISE = 0;                             \
+        OUTPUT_SC_BACK = 0;                                             \
         OUTPUT_STOP = 1;                                                \
     } else if (global.output.start) {                                   \
         if (global.output.dir == CONFIG_GROUP_DIR_FORWARD) {            \
@@ -45,10 +47,12 @@ uint8 speed_voltage_to_pwm(uint8 speed_voltage);
             OUTPUT_START_CLOCKWISE = 0;                                 \
             OUTPUT_START_COUNTER_CLOCKWISE = 1;                         \
         }                                                               \
+        OUTPUT_SC_BACK = 1;                                             \
         OUTPUT_STOP = 0;                                                \
     } else {                                                            \
         OUTPUT_START_CLOCKWISE = 0;                                     \
         OUTPUT_START_COUNTER_CLOCKWISE = 0;                             \
+        OUTPUT_SC_BACK = 0;                                             \
         OUTPUT_STOP = 0;                                                \
     }                                                                   \
 } while (0)
