@@ -26,8 +26,12 @@ uint8 speed_voltage_to_pwm(uint8 speed_voltage);
 } while (0)
 
 #define output_flush_speed do {             \
+	CR = 0;                                 \
+	CL = 0;                                 \
+	CH = 0;                                 \
     CCAP0L = global.output.speed_pwm;       \
-	CCAP0H = CCAP0L;                        \
+	CCAP0H = global.output.speed_pwm;       \
+	CR = 1;                                 \
 } while (0)
 
 #define output_flush_start_stop_dir do {                                \
