@@ -63,7 +63,6 @@ void output_init(void) {
     global.output.speed_pwm = IDLE_SPEED_PWM;
     global.output.beer = 0;
     output_flush;
-    OUTPUT_SC_BACK = 0;
 
     /* Start PWM */
 	CR = 1;
