@@ -45,7 +45,7 @@ uint8 speed_voltage_to_pwm(uint8 speed_voltage) {
 void output_init(void) {
     /* IO Config */
 	P1M1 = 0;
-	P1M0 = 0x07;
+	P1M0 = 0x17;
 
     /* PWM Config */
 	CCON = 0;
