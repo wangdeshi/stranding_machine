@@ -70,7 +70,7 @@ void lcd12864_ddram_write(uint8 addr, uint8 * date, uint8 n) {
 
 void lcd12864_ddram_clear(void) {
 	lcd12864_write_command(0x01);
-	delay(30);
+	delay(200);
 }
 
 /* addr[0x00, 0x0f] -> 0x0000 */

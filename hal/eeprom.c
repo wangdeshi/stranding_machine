@@ -132,7 +132,7 @@ void set_all_group_config(void) {
 void fill_default_system_config(void) {
     global.cfg.system.speed_percentage = 20;
     global.cfg.system.ahead = 30;
-    global.cfg.system.pulse = 1;
+    global.cfg.system.pulse = 92;
 }
 
 void fill_default_group_config(uint8 group_nums) {

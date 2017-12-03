@@ -5,8 +5,6 @@
 #include "global.h"
 #include "util.h"
 
-static uint8 xdata last_page_id = 255;
-
 #define show_ascii_zheng_fan(dir) do {                  \
     if ((dir) == CONFIG_GROUP_DIR_FORWARD) {            \
         lcd12864_cgram_write(0x00, cgram_zheng, 32);    \
@@ -50,8 +48,8 @@ static uint8 xdata last_page_id = 255;
 } while (0)
 
 static void process_page_working(void) {
-    if (last_page_id != global.display.page_id) {
-        last_page_id = global.display.page_id;
+    if (global.display.last_page_id != global.display.page_id) {
+        global.display.last_page_id = global.display.page_id;
         lcd12864_ddram_clear();
         lcd_show_picture(pixel_working);
     }
@@ -128,8 +126,8 @@ static void process_page_user_config(void) {
     static uint8 xdata offset = 0;
     uint8 digit_bits;
 
-    if (last_page_id != global.display.page_id) {
-        last_page_id = global.display.page_id;
+    if (global.display.last_page_id != global.display.page_id) {
+        global.display.last_page_id = global.display.page_id;
         group_id = 0;
         item = 0;
         offset = get_digit_bits(USER_CFG_MAX_GROUPS) - 1;
@@ -356,8 +354,8 @@ static void process_page_system_config(void) {
     static uint8 xdata offset = 0;
     uint8 digit_bits;
 
-    if (last_page_id != global.display.page_id) {
-        last_page_id = global.display.page_id;
+    if (global.display.last_page_id != global.display.page_id) {
+        global.display.last_page_id = global.display.page_id;
         item = 0;
         offset = get_digit_bits(SYS_CFG_MAX_PULSE) - 1;
         lcd12864_ddram_clear();
@@ -470,7 +468,7 @@ static void process_page_system_config(void) {
 }
 
 static void process_page_null(void) {
-    if (global.display.page_id != last_page_id) {
+    if (global.display.page_id != global.display.last_page_id) {
         lcd_clear;
 
         /* raw1 */
@@ -526,5 +524,6 @@ uint8 display_system_config_check(void) {
 void display_init(void) {
     lcd_init;
     global.display.page_id = DISPLAT_PAGE_ID_WORKING;
+    global.display.last_page_id = DISPLAT_PAGE_ID_INVALID;
 }
 

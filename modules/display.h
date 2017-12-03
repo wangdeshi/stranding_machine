@@ -7,9 +7,11 @@
 #define DISPLAT_PAGE_ID_WORKING         1
 #define DISPLAT_PAGE_ID_USER_CONFIG     2
 #define DISPLAT_PAGE_ID_SYSTEM_CONFIG   3
+#define DISPLAT_PAGE_ID_INVALID         255
 
 struct DISPLAY {
     uint8 page_id;
+    uint8 last_page_id;
 };
 
 void display_process(void);

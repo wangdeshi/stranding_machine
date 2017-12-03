@@ -1,41 +1,6 @@
 #include "strand.h"
 #include "global.h"
 
-#define motor_run_low_speed(group_id) do {                  \
-    global.output.speed_pwm = global.strand.low_speed_pwm;  \
-    output_flush_speed;                                     \
-    global.strand.group_current_low_speed_turns = 0;        \
-    global.output.start = 1;                                \
-    global.output.stop = 0;                                 \
-    global.output.dir = global.cfg.groups.group[group_id].dir;  \
-    output_flush_start_stop_dir;                            \
-} while (0)
-
-#define motor_run(group_id) do {                                \
-    global.output.speed_pwm = global.strand.high_speed_pwm;     \
-    output_flush_speed;                                         \
-    global.output.start = 1;                                    \
-    global.output.stop = 0;                                     \
-    global.output.dir = global.cfg.groups.group[group_id].dir;  \
-    output_flush_start_stop_dir;                                \
-} while (0)
-
-#define motor_braking_start do {                \
-    global.output.speed_pwm = IDLE_SPEED_PWM;   \
-    output_flush_speed;                         \
-    global.output.start = 0;                    \
-    global.output.stop = 1;                     \
-    output_flush_start_stop_dir;                \
-} while (0)
-
-#define motor_braking_stop do {                 \
-    global.output.speed_pwm = IDLE_SPEED_PWM;   \
-    output_flush_speed;                         \
-    global.output.start = 0;                    \
-    global.output.stop = 0;                     \
-    output_flush_start_stop_dir;                \
-} while (0)
-
 void strand_group_init(uint8 group_id) {
     if (group_id >= global.cfg.groups.num) {
         return;
@@ -126,6 +91,7 @@ void int1_process(void) interrupt 2 using 2 {
 
 void strand_process(void) {
     uint8 group_id;
+    static uint8 xdata output_save_flag = 0;
 
     if (global.display.page_id != DISPLAT_PAGE_ID_WORKING) {
         return;
@@ -144,7 +110,7 @@ void strand_process(void) {
                 if (global.strand.group_id >= global.cfg.groups.num) {
                     global.strand.group_id = 0;
                     global.strand.output++;
-                    set_strand_output();
+                    output_save_flag = 1;
                 }
                 group_id = global.strand.group_id;
                 strand_group_init(group_id);
@@ -167,6 +133,10 @@ void strand_process(void) {
                 global.strand.group_id = 0;
                 strand_group_init(global.strand.group_id);
                 group_id = global.strand.group_id;
+            }
+            if (output_save_flag) {
+                output_save_flag = 0;
+                set_strand_output();
             }
             break;
         }

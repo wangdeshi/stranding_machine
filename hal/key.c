@@ -33,9 +33,12 @@ static uint8 xdata input_stop_last, input_stop;
 
 
 void time0_process(void) interrupt 1 using 1 {
-    static xdata uint8 count1 = 1, count2 = 2;
+    static xdata uint16 count1 = 1, count2 = 2;
     static xdata uint16 count3 = 3, count4 = 4, count5 = 5;
     static xdata uint32 group_last_turns = 0;
+    static xdata uint32 last_turns = 0;
+    static xdata uint32 last_low_speed_turns = 0;
+    static xdata uint16 turns_idle_count = 0, low_speed_turns_idle_count = 0;
 
     TH0 = (uint8)((65536 - 1000) >> 8);
     TL0 = (uint8)((65536 - 1000));	
@@ -58,28 +61,64 @@ void time0_process(void) interrupt 1 using 1 {
         global.flag.flashes = !global.flag.flashes;
     }
 
-    if (global.strand.state == STRAND_STATE_BRAKING) {
-        count3++;
-        if (count3 <= 150) {
-            OUTPUT_BEER = 1;
-        } else if (count3 <= 300) {
-            OUTPUT_BEER = 0;
-        } else if (count3 <= 450) {
-            if ((global.strand.group_current_turns >= 
-                    global.cfg.groups.group[global.strand.group_id].arrival) &&
-                    ((global.strand.group_id + 1) >= global.cfg.groups.num)) {
+    switch (global.strand.state) {
+        case STRAND_STATE_RUN: 
+            if (global.strand.group_current_turns == last_turns) {
+                turns_idle_count++;
+                if (turns_idle_count > 1000) {
+                    turns_idle_count = 0;
+                    last_turns = 0;
+                    motor_braking_stop;           
+                    global.strand.state = STRAND_STATE_FINISH;
+                }
+            } else {
+                turns_idle_count = 0;
+                last_turns = global.strand.group_current_turns;
+            }
+            break;
+        case STRAND_STATE_RUN_LOW_SPEED: 
+            if (global.strand.group_current_low_speed_turns == last_low_speed_turns) {
+                low_speed_turns_idle_count++;
+                if (low_speed_turns_idle_count > 1000) {
+                    low_speed_turns_idle_count = 0;
+                    last_low_speed_turns = 0;
+                    motor_braking_stop;           
+                    global.strand.state = STRAND_STATE_FINISH;
+                }
+            } else {
+                low_speed_turns_idle_count = 0;
+                last_low_speed_turns = global.strand.group_current_low_speed_turns;
+            }
+            break;
+        case STRAND_STATE_BRAKING:
+            count3++;
+            if (count3 <= 100) {
                 OUTPUT_BEER = 1;
+            } else if (count3 <= 200) {
+                OUTPUT_BEER = 0;
+            } else if (count3 < 300) {
+                if ((global.strand.group_current_turns >= 
+                            global.cfg.groups.group[global.strand.group_id].arrival) &&
+                        ((global.strand.group_id + 1) >= global.cfg.groups.num)) {
+                    OUTPUT_BEER = 1;
+                } else {
+                    OUTPUT_BEER = 0;
+                }
             } else {
                 OUTPUT_BEER = 0;
             }
-        } else {
-            OUTPUT_BEER = 0;
-        }
 
-        if (count3 >= 700) {
-            count3 = 0;
-            global.strand.state = STRAND_STATE_BRAKE_DONE;
-        }
+            if (count3 >= 400) {
+                count3 = 0;
+                global.strand.state = STRAND_STATE_BRAKE_DONE;
+            }
+            break;
+        case STRAND_STATE_STANDBY: 
+        case STRAND_STATE_BRAKE_DONE:
+        case STRAND_STATE_PAUSE:
+        case STRAND_STATE_FINISH: 
+        default:
+            break;
     }
 
     count2++;
