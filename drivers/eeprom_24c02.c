@@ -75,7 +75,7 @@ static uint8 iic_read(void) {
 }
 
 void eeprom_write(uint8 addr, uint8 date) {
-    EA = 0;
+    //EA = 0;
     iic_init();
     iic_start();
     iic_write(0xa0);
@@ -85,7 +85,7 @@ void eeprom_write(uint8 addr, uint8 date) {
     iic_write(date);
     iic_ack();
     iic_stop();
-    EA = 1;
+    //EA = 1;
 }
 
 void eeprom_write_uint32(uint8 addr, uint32 date) {
